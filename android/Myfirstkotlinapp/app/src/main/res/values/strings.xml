@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My first kotlin app</string>
+    <string name="edit_message" translatable="false">Enter a message</string>
+    <string name="button_send" translatable="false">Send</string>
+</resources>
