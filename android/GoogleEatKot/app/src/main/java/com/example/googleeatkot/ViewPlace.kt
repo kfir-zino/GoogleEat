@@ -58,8 +58,13 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
     private fun assignPhoto(){
         //Load photo of place
         if (Common.currentResult!!.photos != null && Common.currentResult!!.photos!!.isNotEmpty())
+            shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
             try {
-                shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
+                val lets_see = Uri.parse(shitFace)
+            } catch (e: Exception) {
+                Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
+            }
+            try {
                 Picasso.with(mContext)
                     //                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
                     .load(shitFace)
