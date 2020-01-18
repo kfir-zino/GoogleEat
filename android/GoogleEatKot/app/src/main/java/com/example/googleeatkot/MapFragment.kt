@@ -77,6 +77,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     lateinit var mService: IGoogleAPIservice
     internal lateinit var currentPlaces: myPlaces
+  //  lateinit var currPlaceViewPlace: ViewPlace
 
 
     private fun placeMarkerOnMap(location: LatLng) {
@@ -92,6 +93,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         rootView = inflater.inflate(R.layout.map_fragment, container, false)
 
+//        currPlaceViewPlace = childFragmentManager.findFragmentById(R.id.view_place) as ViewPlace
+//        currPlaceViewPlace.setMenuVisibility(false)
 
         mapFragment = childFragmentManager.findFragmentById(R.id.frg) as? SupportMapFragment?  //use SuppoprtMapFragment for using in fragment instead of activity  MapFragment = activity   SupportMapFragment = fragment
 
@@ -99,6 +102,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
 
         mService = Common.googleApiService
+//        mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
 
         locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
@@ -123,16 +127,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             } catch (e: Exception) {
                 Toast.makeText(this@MapFragment.requireContext(), "check2", Toast.LENGTH_SHORT).show()
             }
-//            if (mMap != null) {
-//                mMap!!.setOnMarkerClickListener { marker ->
-//                    Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+            if (mMap != null) {
+                mMap!!.setOnMarkerClickListener { marker ->
+                    Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+                    mMap!!.setInfoWindowAdapter(ViewPlace(this@MapFragment.requireContext()))
+                    marker.showInfoWindow()
 //                    childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
 //                        .replace(R.id.map_fragment, ViewPlace.newInstance())
 //                        .addToBackStack(null)
 //                        .commit()
-//                    true
-//                }
-//            }
+                    true
+                }
+            }
 
         }
     }
@@ -142,9 +148,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //            loadPlacePicker()
 //        }
         createLocationRequest()
-//        if (mMap != null) {
-//            this.nearByPlace()
-//        }
+        if (mMap != null) {
+            this.nearByPlace()
+        }
         return rootView
     }
 
@@ -164,18 +170,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val lat = googlePlace.geometry!!.location!!.lat
                             val lng = googlePlace.geometry!!.location!!.lng
                             val placeName = googlePlace.name
+                            val place_id = googlePlace.id
                             val latLng = LatLng(lat, lng)
                             val markerOptions: MarkerOptions = MarkerOptions()
                                 .position(latLng)
                                 .title(placeName)
+                                .snippet(i.toString())
                             when {
                                 "restaurant" in googlePlace.types!! -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // TODO - cry to victor bitmap is not recognized
                                 "bar" in googlePlace.types!! -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // TODO - cry to victor bitmap is not recognized
                                 "cafe" in googlePlace.types!! -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // TODO - cry to victor bitmap is not recognized
-                                //typePlace == "restaurant" -> markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_png))
-                                //typePlace == "bakery" -> markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_cake))
-                                //typePlace == "bar" -> markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_bar))
-                                //typePlace == "cafe" -> markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_cafe))
+
                             }
                             try {
                                 markerOptions.snippet(i.toString())
@@ -255,10 +260,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (mMap != null) {
             mMap!!.setOnMarkerClickListener { marker ->
                 Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
-                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
-                    .replace(R.id.map_fragment, ViewPlace.newInstance())
-                    .addToBackStack(null)
-                    .commit()
+                mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
+                marker.showInfoWindow()
+//                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
+//                    .replace(R.id.map_fragment, ViewPlace.newInstance())
+//                    .addToBackStack(null)
+//                    .commit()
                 true
             }
         }
@@ -372,14 +379,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         try {
             mMap!!.setOnMarkerClickListener { marker ->
                 Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
-                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
-                    .replace(R.id.map_fragment, ViewPlace.newInstance())
-                    .addToBackStack(null)
-                    .commit()
+                mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
+                marker.showInfoWindow()
+//                val test = ViewPlace.newInstance()
+//                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
+//                    .add(R.id.map_fragment, test)
+//                    .addToBackStack(null)
+//                    .commit()
                 true
             }
         } catch (t : Exception) {
-            Toast.makeText(this@MapFragment.requireContext(), ""+t.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MapFragment.requireContext(), "fail to Click"+t.message, Toast.LENGTH_SHORT).show()
         }
         Toast.makeText(this@MapFragment.requireContext(), "WTF", Toast.LENGTH_SHORT).show()
 

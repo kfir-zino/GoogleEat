@@ -7,12 +7,21 @@
         tools:context=".MapFragment">
 
     <fragment
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:id="@+id/frg"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
-<!--    <com.google.android.gms.maps.MapView-->
+<!--    <fragment-->
+<!--            android:id="@+id/view_place"-->
+<!--            android:name="com.example.googleeatkot.ViewPlace"-->
+<!--            android:layout_width="277dp"-->
+<!--            android:layout_height="385dp"-->
+<!--            android:layout_marginLeft="50dp"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:layout_marginRight="50dp" />-->
+
+    <!--    <com.google.android.gms.maps.MapView-->
 <!--            android:id="@+id/mapView"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="314dp" />-->

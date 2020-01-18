@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ViewPlace">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
 
     <LinearLayout
             android:orientation="vertical"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
         <ImageView
                 android:id="@+id/photo"
-                android:src="@drawable/places_ic_search"
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
@@ -58,6 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/rating_bar"
+                    style="@style/customRatingBar"
                     android:max="5" />
 
             <Button
@@ -72,4 +67,4 @@
     </LinearLayout>
 
 
-</FrameLayout>
+</LinearLayout>

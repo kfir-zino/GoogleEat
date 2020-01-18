@@ -3,6 +3,7 @@ package com.example.googleeatkot
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -31,29 +32,45 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
     private var mInfoWindow : View
     private var mContext: Context
     var mPlace: PlaceDetail? = null
+    var mURL: String? = null
+    lateinit var shitFace: String
     init {
         mContext = context
         mInfoWindow = LayoutInflater.from(mContext).inflate(R.layout.fragment_view_place,null)
         mPlace?.result = Common.currentResult
+        mURL="https://maps.googleapis.com/maps/api/place/photo"+"?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
     }
     private fun assignWindowText(){
         //Set empty for all tet view
+        mInfoWindow.setBackgroundColor(Color.WHITE)
         mInfoWindow.place_name.text = Common.currentResult!!.name
-        mInfoWindow.place_address.text = Common.currentResult!!.adr_address
-        mInfoWindow.open_hours.text = Common.currentResult!!.opening_hours.toString()
+        mInfoWindow.place_address.text = Common.currentResult!!.vicinity
         //Load open hours
         if (Common.currentResult!!.opening_hours != null)
-            mInfoWindow.open_hours.text = "@string/open_now" + Common.currentResult!!.opening_hours!!.open_now
+            if (Common.currentResult!!.opening_hours!!.open_now)
+                mInfoWindow.open_hours.text = "Open"
+            else
+                mInfoWindow.open_hours.text = "Closed"
+//            mInfoWindow.open_hours.text = "@string/open_now" + Common.currentResult!!.opening_hours!!.open_now
         else
             mInfoWindow.open_hours.visibility = View.GONE
     }
     private fun assignPhoto(){
         //Load photo of place
         if (Common.currentResult!!.photos != null && Common.currentResult!!.photos!!.isNotEmpty())
-            Picasso.with(mContext)
-//                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
-                .load(Common.currentResult!!.photos!![0].photo_reference!!)
-                .into(mInfoWindow.photo)
+            try {
+                shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
+                Picasso.with(mContext)
+                    //                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
+                    .load(shitFace)
+                    //                .fit().centerCrop()
+                    //            .placeholder(R.drawable.places_ic_search)
+                    //            .error(R.drawable.ic_restaurant_png)
+                    .into(mInfoWindow.photo)
+            } catch (e: Exception) {
+                Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
+            }
+
     }
     private fun assignRating(){
         //load rating
