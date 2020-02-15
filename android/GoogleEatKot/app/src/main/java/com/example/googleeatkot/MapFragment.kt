@@ -5,9 +5,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -17,9 +14,10 @@ import android.graphics.Canvas
 import androidx.core.content.ContextCompat
 import android.location.Location
 import android.os.Looper
-import android.view.MotionEvent
+import android.view.*
 import android.widget.Toast
 import androidx.annotation.IntegerRes
+import androidx.annotation.MainThread
 import androidx.core.app.ActivityCompat
 import com.example.googleeatkot.Common.Common
 import com.example.googleeatkot.Model.myPlaces
@@ -104,6 +102,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mService = Common.googleApiService
 //        mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
 
+
         locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             super.onLocationResult(p0)
@@ -130,6 +129,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (mMap != null) {
                 mMap!!.setOnMarkerClickListener { marker ->
                     Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+//                    Common.placesResults = currentPlaces!!.results!!
                     mMap!!.setInfoWindowAdapter(ViewPlace(this@MapFragment.requireContext()))
                     marker.showInfoWindow()
 //                    childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
@@ -163,7 +163,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .enqueue(object: Callback<myPlaces>{
                 override fun onResponse(call: Call<myPlaces>, response: Response<myPlaces>?) {
                     currentPlaces = response!!.body()!!
+                    Common.placesResults = currentPlaces!!.results!!
                     if (response!!.isSuccessful) {
+                        (activity as MainActivity).scrollPlaces()
                         //Toast.makeText(this@MapFragment.requireContext(), "check1", Toast.LENGTH_SHORT).show()
                         for ( i in 0 until response.body()!!.results!!.size) {
                             val googlePlace = response.body()!!.results!![i]
@@ -201,6 +203,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             })
     }
+
+
+
 
 
     private fun getUrl( lati: Double, longi: Double, typePlace: String, radius: Int): String
@@ -379,6 +384,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         try {
             mMap!!.setOnMarkerClickListener { marker ->
                 Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+//                Common.placesResults = currentPlaces!!.results!!
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
                 marker.showInfoWindow()
 //                val test = ViewPlace.newInstance()
@@ -388,6 +394,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //                    .commit()
                 true
             }
+            (activity as MainActivity).scrollPlaces()
         } catch (t : Exception) {
             Toast.makeText(this@MapFragment.requireContext(), "fail to Click"+t.message, Toast.LENGTH_SHORT).show()
         }

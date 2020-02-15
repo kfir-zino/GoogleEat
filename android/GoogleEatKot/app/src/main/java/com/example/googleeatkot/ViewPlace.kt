@@ -3,14 +3,18 @@ package com.example.googleeatkot
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import com.example.googleeatkot.Common.Common
 import com.example.googleeatkot.Model.PlaceDetail
@@ -23,6 +27,7 @@ import java.lang.StringBuilder
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.fragment_view_place.view.*
+import java.net.URL
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,21 +62,33 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
     }
     private fun assignPhoto(){
         //Load photo of place
-        if (Common.currentResult!!.photos != null && Common.currentResult!!.photos!!.isNotEmpty())
-            shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
+        var bmp: Bitmap? = null
+            if (Common.currentResult!!.photos != null && Common.currentResult!!.photos!!.isNotEmpty())
+//            AssignPhoto().execute(Common.currentResult!!.photos!![0].photo_reference!!)
+//            shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
+//            try {
+//                val lets_see = Uri.parse(shitFace)
+//            } catch (e: Exception) {
+//                Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
+//            }
             try {
-                val lets_see = Uri.parse(shitFace)
-            } catch (e: Exception) {
-                Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
-            }
-            try {
-                Picasso.with(mContext)
-                    //                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
-                    .load(shitFace)
-                    //                .fit().centerCrop()
-                    //            .placeholder(R.drawable.places_ic_search)
-                    //            .error(R.drawable.ic_restaurant_png)
-                    .into(mInfoWindow.photo)
+//                val url = URL(shitFace)
+                try {
+                    val check_exe = AssignPhoto(this@ViewPlace.mContext).execute(Common.currentResult!!.photos!![0].photo_reference!!)
+                    bmp = check_exe.get()
+//                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                } catch (e : Exception) {
+                    Toast.makeText(this@ViewPlace.mContext, e.message, Toast.LENGTH_SHORT).show()
+                }
+                mInfoWindow.photo.setImageBitmap(bmp)
+
+//                Picasso.with(mContext)
+//                    //                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
+//                    .load(shitFace)
+//                    //                .fit().centerCrop()
+//                    //            .placeholder(R.drawable.places_ic_search)
+//                    //            .error(R.drawable.ic_restaurant_png)
+//                    .into(mInfoWindow.photo)
             } catch (e: Exception) {
                 Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
             }
@@ -202,5 +219,67 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
 //        fun onFragmentInteraction(uri: Uri)
 //    }
 
+
+}
+
+class AssignPhoto(context: Context) : AsyncTask<String, Void, Bitmap>() {
+    val mURL="https://maps.googleapis.com/maps/api/place/photo"+"?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
+    var exception: java.lang.Exception? = null
+    val mContext: Context = context
+
+    override fun doInBackground(vararg params: String?): Bitmap? {
+        try {
+            val shitFace = mURL + "&photoreference=" + params[0]
+            val url = URL(shitFace)
+            var bmp: Bitmap? = null
+            try {
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+            } catch (e : Exception) {
+//                Toast.makeText(this@, e.message, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this.mContext, "the error is: " + e.message, Toast.LENGTH_SHORT).show()
+                return null
+            }
+//            val mInfoWindow: ImageView = params[0] as ImageView
+//            mInfoWindow.photo.setImageBitmap(bmp)
+
+            return bmp
+        } catch (e: Exception) {
+//            Toast.makeText(this.mContext, "the error is: " + e.message, Toast.LENGTH_SHORT).show()
+
+            return null
+        } finally {
+
+        }
+    }
+
+    override fun onPostExecute(result: Bitmap?) {
+        super.onPostExecute(result)
+        if(this.exception != null) {
+//            print("the error is: " + this.exception!!.message)
+//            Toast.makeText(this.mContext, "the error is: " + this.exception!!.message, Toast.LENGTH_SHORT).show()
+            throw this.exception!!
+        }
+    }
+
+
+//    if (Common.currentResult!!.photos != null && Common.currentResult!!.photos!!.isNotEmpty())
+//        shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
+//        try {
+//            val lets_see = Uri.parse(shitFace)
+//        } catch (e: Exception) {
+//            Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
+//        }
+//        try {
+//            val url = URL(shitFace)
+//            var bmp: Bitmap? = null
+//            try {
+//                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+//            } catch (e : Exception) {
+//                Toast.makeText(this@ViewPlace.mContext, e.message, Toast.LENGTH_SHORT).show()
+//            }
+//            mInfoWindow.photo.setImageBitmap(bmp)
+//        } catch (e: Exception) {
+//            Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
+//        }
 
 }
