@@ -18,15 +18,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.MapView
 import android.graphics.BitmapFactory
 import java.net.URL
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private var mAuth: FirebaseAuth? = null
     lateinit var signInButton: Button
     lateinit var signOutButton: Button
     lateinit var map: MapFragment
-    lateinit var currentUser: FirebaseUser
+     var currentUser: FirebaseUser? = null
     lateinit var gso: GoogleSignInOptions
     lateinit var loginIntent: Intent
     lateinit var miniMap: MapView
@@ -39,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         // signOutButton.visibility = View.INVISIBLE
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance()
         setContentView(R.layout.activity_main)
 
         signInButton = findViewById<Button>(R.id.signInButton) as Button
@@ -145,12 +154,15 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        currentUser = mAuth!!.currentUser
         signInButton.setOnClickListener{
             this.signIn()
         }
         signOutButton.setOnClickListener{
             this.signOut()
         }
+        updateUI(currentUser);
         scrollPlaces()
 
     }
@@ -182,7 +194,7 @@ class MainActivity : AppCompatActivity() {
             if (data != null) {
                 if (data.hasExtra("FBuser")) {
                     currentUser = data.extras.getParcelable("FBuser")
-                    gso =  data.extras.getParcelable("gso")
+                    gso =  data.extras.getParcelable("gso")!!
 
                 }
             }
@@ -192,5 +204,13 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI(account: FirebaseUser?) {
 //        val dispTxt = findViewById<View>(R.id.dispTxt) as TextView
 //        dispTxt.text = account!!.displayName
+        if(account == null) {
+            signInButton.visibility = View.VISIBLE
+            signOutButton.visibility = View.INVISIBLE
+        }
+        else {
+            signInButton.visibility = View.INVISIBLE
+            signOutButton.visibility = View.VISIBLE
+        }
     }
 }
