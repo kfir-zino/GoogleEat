@@ -128,7 +128,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
             if (mMap != null) {
                 mMap!!.setOnMarkerClickListener { marker ->
-                    Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+                    if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
+                        Common.currentResult = Common.placesResults!![marker.snippet]
+                    }
 //                    Common.placesResults = currentPlaces!!.results!!
                     mMap!!.setInfoWindowAdapter(ViewPlace(this@MapFragment.requireContext()))
                     marker.showInfoWindow()
@@ -163,7 +165,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .enqueue(object: Callback<myPlaces>{
                 override fun onResponse(call: Call<myPlaces>, response: Response<myPlaces>?) {
                     currentPlaces = response!!.body()!!
-                    Common.placesResults = currentPlaces!!.results!!
                     if (response!!.isSuccessful) {
                         (activity as MainActivity).scrollPlaces()
                         //Toast.makeText(this@MapFragment.requireContext(), "check1", Toast.LENGTH_SHORT).show()
@@ -173,11 +174,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val lng = googlePlace.geometry!!.location!!.lng
                             val placeName = googlePlace.name
                             val place_id = googlePlace.id
+                            Common.placesResults!![place_id.toString()] = googlePlace
                             val latLng = LatLng(lat, lng)
                             val markerOptions: MarkerOptions = MarkerOptions()
                                 .position(latLng)
                                 .title(placeName)
-                                .snippet(i.toString())
+                                .snippet(place_id)
                             when {
                                 "restaurant" in googlePlace.types!! -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // TODO - cry to victor bitmap is not recognized
                                 "bar" in googlePlace.types!! -> markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // TODO - cry to victor bitmap is not recognized
@@ -185,7 +187,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                             }
                             try {
-                                markerOptions.snippet(i.toString())
+//                                markerOptions.snippet(i.toString())
                                 mMap!!.addMarker(markerOptions)
                             } catch (t : Exception) {
                                 Toast.makeText(this@MapFragment.requireContext(), ""+t.message, Toast.LENGTH_SHORT).show()
@@ -264,7 +266,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onStart()
         if (mMap != null) {
             mMap!!.setOnMarkerClickListener { marker ->
-                Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+                if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
+                    Common.currentResult = Common.placesResults!![marker.snippet]
+                }
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
                 marker.showInfoWindow()
 //                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
@@ -383,7 +387,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         try {
             mMap!!.setOnMarkerClickListener { marker ->
-                Common.currentResult = currentPlaces!!.results!![Integer.parseInt(marker.snippet)]
+                if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
+                    Common.currentResult = Common.placesResults!![marker.snippet]
+                }
 //                Common.placesResults = currentPlaces!!.results!!
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
                 marker.showInfoWindow()
