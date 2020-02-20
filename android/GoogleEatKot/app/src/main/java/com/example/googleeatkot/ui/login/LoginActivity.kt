@@ -17,12 +17,14 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
-
+    private lateinit var databaseRef: DatabaseReference
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var gso: GoogleSignInOptions
     private lateinit var auth: FirebaseAuth
@@ -105,6 +107,8 @@ class LoginActivity : AppCompatActivity() {
                             "welcome ${user!!.displayName}",
                             Toast.LENGTH_LONG
                         ).show()
+                        databaseRef = FirebaseDatabase.getInstance().getReference("messages")
+                        databaseRef.setValue("Hello, World!")
                     } catch (e: ApiException){
                         ourResult = 1
                         Toast.makeText(
