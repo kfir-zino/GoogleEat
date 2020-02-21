@@ -17,14 +17,14 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var databaseRef: DatabaseReference
+    private lateinit var DBUserRef: DatabaseReference
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var gso: GoogleSignInOptions
     private lateinit var auth: FirebaseAuth
@@ -109,6 +109,29 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
                         databaseRef = FirebaseDatabase.getInstance().getReference("messages")
                         databaseRef.setValue("Hello, World!")
+                        DBUserRef = FirebaseDatabase.getInstance().getReference("Users")
+                        DBUserRef.child(user!!.uid).addValueEventListener(object : ValueEventListener{
+                            override fun onCancelled(databsaeError: DatabaseError) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Firebase field to get data for ${user!!.displayName}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                if(!dataSnapshot.exists()){
+                                    //writing new user to DB
+                                    DBUserRef.child(user!!.uid).setValue(user!!)
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Welcome to GoogleEat ${user!!.displayName}!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+
+                        })
                     } catch (e: ApiException){
                         ourResult = 1
                         Toast.makeText(
