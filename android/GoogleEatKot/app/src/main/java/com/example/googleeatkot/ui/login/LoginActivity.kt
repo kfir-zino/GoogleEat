@@ -108,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG
                         ).show()
                         databaseRef = FirebaseDatabase.getInstance().getReference("messages")
-                        databaseRef.setValue("Hello, World!")
+                        databaseRef.setValue("Hello, \${user!!.displayName!}")
                         DBUserRef = FirebaseDatabase.getInstance().getReference("Users")
                         DBUserRef.child(user!!.uid).addValueEventListener(object : ValueEventListener{
                             override fun onCancelled(databsaeError: DatabaseError) {
