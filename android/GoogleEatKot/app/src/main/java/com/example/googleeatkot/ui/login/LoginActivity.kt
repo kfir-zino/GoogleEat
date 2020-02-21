@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.*
 
 import com.example.googleeatkot.R
+import com.example.googleeatkot.User
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 // import android.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -114,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
                             override fun onCancelled(databsaeError: DatabaseError) {
                                 Toast.makeText(
                                     applicationContext,
-                                    "Firebase field to get data for ${user!!.displayName}",
+                                    "Firebase failed to get data for ${user!!.displayName}",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -123,7 +124,8 @@ class LoginActivity : AppCompatActivity() {
                                 if(!dataSnapshot.exists()){
                                     //writing new user to DB
 //                                    DBUserRef.child(user!!.uid).setValue(user!!)
-                                    DBUserRef.child(user!!.uid).setValue("test")
+                                    val newUser : User = User(user,null)
+                                    DBUserRef.child(user!!.uid).setValue(newUser)
                                     Toast.makeText(
                                         applicationContext,
                                         "Welcome to GoogleEat ${user!!.displayName}!",
