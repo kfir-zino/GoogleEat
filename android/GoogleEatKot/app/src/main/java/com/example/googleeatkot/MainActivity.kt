@@ -108,20 +108,23 @@ class MainActivity : AppCompatActivity() {
                 placeImage.layoutParams = params1
                 // accessing images that we downloaded and copied to
                 // drawable folder and setting it to imageview
-//                var mURL =
-//                    "https://maps.googleapis.com/maps/api/place/photo" + "?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
-//                var shitFace =
-//                    mURL + "&photoreference=" + currPlaces[keys[i]]!!.photos!![0].photo_reference!!
-//                val url = URL(shitFace)
-//                var bmp: Bitmap? = null
-//                try {
-//                    val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
-//                    bmp = check_exe.get()
-//                } catch (e : Exception) {
-//                    Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
-//                }
-//                placeImage.setImageBitmap(bmp)
-                placeImage.setImageResource(R.drawable.ic_restaurant_png)
+                var mURL =
+                    "https://maps.googleapis.com/maps/api/place/photo" + "?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
+                var shitFace =
+                    mURL + "&photoreference=" + currPlaces[keys[i]]!!.photos!![0].photo_reference!!
+                val url = URL(shitFace)
+                var bmp: Bitmap? = null
+                var bmpOpt : BitmapFactory.Options = BitmapFactory.Options()
+                bmpOpt.inJustDecodeBounds = true
+//                bmpOpt.inSampleSize = calculateInSampleSize()
+                try {
+                    val check_exe = AssignPhoto(this@MainActivity.baseContext, bmpOpt).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
+                    bmp = check_exe.get()
+                } catch (e : Exception) {
+                    Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
+                }
+                placeImage.setImageBitmap(bmp)
+//                placeImage.setImageResource(R.drawable.ic_restaurant_png)
 
 
                 linearLayout.addView(placeImage)
