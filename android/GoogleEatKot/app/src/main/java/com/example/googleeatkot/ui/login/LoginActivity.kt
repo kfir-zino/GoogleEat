@@ -122,7 +122,8 @@ class LoginActivity : AppCompatActivity() {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 if(!dataSnapshot.exists()){
                                     //writing new user to DB
-                                    DBUserRef.child(user!!.uid).setValue(user!!)
+//                                    DBUserRef.child(user!!.uid).setValue(user!!)
+                                    DBUserRef.child(user!!.uid).setValue("test")
                                     Toast.makeText(
                                         applicationContext,
                                         "Welcome to GoogleEat ${user!!.displayName}!",

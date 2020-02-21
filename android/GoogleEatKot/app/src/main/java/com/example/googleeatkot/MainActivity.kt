@@ -209,6 +209,7 @@ class MainActivity : AppCompatActivity() {
         else {
             signInButton.visibility = View.INVISIBLE
             signOutButton.visibility = View.VISIBLE
+            this.signIn()
         }
     }
 }
