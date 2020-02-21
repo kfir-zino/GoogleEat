@@ -215,10 +215,11 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
 
 }
 
-class AssignPhoto(context: Context) : AsyncTask<String, Void, Bitmap>() {
+class AssignPhoto(context: Context, bmpOpt: BitmapFactory.Options? = null) : AsyncTask<String, Void, Bitmap>() {
     val mURL="https://maps.googleapis.com/maps/api/place/photo"+"?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
     var exception: java.lang.Exception? = null
     val mContext: Context = context
+    val options = bmpOpt
 
     override fun doInBackground(vararg params: String?): Bitmap? {
         try {
@@ -226,7 +227,7 @@ class AssignPhoto(context: Context) : AsyncTask<String, Void, Bitmap>() {
             val url = URL(shitFace)
             var bmp: Bitmap? = null
             try {
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream(), null, options)
             } catch (e : Exception) {
 //                Toast.makeText(this@, e.message, Toast.LENGTH_SHORT).show()
 //                Toast.makeText(this.mContext, "the error is: " + e.message, Toast.LENGTH_SHORT).show()

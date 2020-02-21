@@ -92,10 +92,12 @@ class MainActivity : AppCompatActivity() {
         placesHorizontalScrollView.addView(linearLayout)
 
         val currPlaces = Common.placesResults
-        if (currPlaces != null) {
+
+        if (currPlaces.isNotEmpty()) {
             var listSize = Common.placesResults!!.size
             if (listSize > 1)
-                listSize = 0
+                listSize = 20
+            val keys = currPlaces.keys.take(listSize)
             for (i in 0 until listSize) {
                 val placeImage = ImageView(this)
                 //setting height and width
@@ -106,26 +108,25 @@ class MainActivity : AppCompatActivity() {
                 placeImage.layoutParams = params1
                 // accessing images that we downloaded and copied to
                 // drawable folder and setting it to imageview
-//                var mURL =
-//                    "https://maps.googleapis.com/maps/api/place/photo" + "?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
-//                var shitFace =
-//                    mURL + "&photoreference=" + currPlaces[i].photos!![0].photo_reference!!
-//                val url = URL(shitFace)
-//                var bmp: Bitmap? = null
-//                try {
-//                    val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[i].photos!![0].photo_reference!!)
-//                    bmp = check_exe.get()
-//                } catch (e : Exception) {
-//                    Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
-//                }
-//                placeImage.setImageBitmap(bmp)
+                var mURL =
+                    "https://maps.googleapis.com/maps/api/place/photo" + "?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
+                var shitFace =
+                    mURL + "&photoreference=" + currPlaces[keys[i]]!!.photos!![0].photo_reference!!
+                val url = URL(shitFace)
+                var bmp: Bitmap? = null
+                var bmpOpt : BitmapFactory.Options = BitmapFactory.Options()
+                bmpOpt.inJustDecodeBounds = true
+//                bmpOpt.inSampleSize = calculateInSampleSize()
+                try {
+                    val check_exe = AssignPhoto(this@MainActivity.baseContext, bmpOpt).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
+                    bmp = check_exe.get()
+                } catch (e : Exception) {
+                    Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
+                }
+                placeImage.setImageBitmap(bmp)
+//                placeImage.setImageResource(R.drawable.ic_restaurant_png)
 
 
-//                placeImage.setImageResource(
-//                    Picasso.with(this)
-//                    .load(shitFace)
-//                    .into(mInfoWindow.photo))
-//                Toast.makeText(this@MainActivity.baseContext, currPlaces[i].name, Toast.LENGTH_SHORT).show()
                 linearLayout.addView(placeImage)
             }
         }
@@ -211,7 +212,7 @@ class MainActivity : AppCompatActivity() {
         else {
             signInButton.visibility = View.INVISIBLE
             signOutButton.visibility = View.VISIBLE
-            gso = intent.getParcelableExtra("gso")!!
+            this.signIn()
         }
     }
 }
