@@ -114,18 +114,14 @@ class MainActivity : AppCompatActivity() {
                     mURL + "&photoreference=" + currPlaces[keys[i]]!!.photos!![0].photo_reference!!
                 val url = URL(shitFace)
                 var bmp: Bitmap? = null
-                var bmpOpt : BitmapFactory.Options = BitmapFactory.Options()
-                bmpOpt.inJustDecodeBounds = true
-                bmpOpt.inSampleSize = calculateInSampleSize(bmpOpt, 500, 500)
-                bmpOpt.inJustDecodeBounds = false
                 try {
-                    val check_exe = AssignPhoto(this@MainActivity.baseContext, bmpOpt).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
-                    bmp = check_exe.get()
+//                    val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
+//                    bmp = check_exe.get()
                 } catch (e : Exception) {
                     Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
                 }
-                placeImage.setImageBitmap(bmp)
-//                placeImage.setImageResource(R.drawable.ic_restaurant_png)
+//                placeImage.setImageBitmap(bmp)
+                placeImage.setImageResource(R.drawable.ic_restaurant_png)
 
 
                 linearLayout.addView(placeImage)
@@ -217,23 +213,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
-        // Raw height and width of image
-        val (height: Int, width: Int) = options.run { outHeight to outWidth }
-        var inSampleSize = 1
-
-        if (height > reqHeight || width > reqWidth) {
-
-            val halfHeight: Int = height / 2
-            val halfWidth: Int = width / 2
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            }
-        }
-
-        return inSampleSize
-    }
 }

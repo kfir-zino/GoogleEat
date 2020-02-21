@@ -215,19 +215,24 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
 
 }
 
-class AssignPhoto(context: Context, bmpOpt: BitmapFactory.Options? = null) : AsyncTask<String, Void, Bitmap>() {
+class AssignPhoto(context: Context) : AsyncTask<String, Void, Bitmap>() {
     val mURL="https://maps.googleapis.com/maps/api/place/photo"+"?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
     var exception: java.lang.Exception? = null
     val mContext: Context = context
-    val options = bmpOpt
 
     override fun doInBackground(vararg params: String?): Bitmap? {
         try {
+//            var bmpOpt : BitmapFactory.Options = BitmapFactory.Options() // resizing image
+//            bmpOpt.inJustDecodeBounds = true // resizing image
             val shitFace = mURL + "&photoreference=" + params[0]
             val url = URL(shitFace)
+//            val Surl = URL(shitFace) // resizing image
             var bmp: Bitmap? = null
             try {
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream(), null, options)
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream(), null, null)
+//                bmpOpt.inSampleSize = calculateInSampleSize(bmpOpt, 500, 500) // resizing image
+//                bmpOpt.inJustDecodeBounds = false // resizing image
+//                bmp = BitmapFactory.decodeStream(Surl.openConnection().getInputStream(), null, bmpOpt) // resizing image
             } catch (e : Exception) {
 //                Toast.makeText(this@, e.message, Toast.LENGTH_SHORT).show()
 //                Toast.makeText(this.mContext, "the error is: " + e.message, Toast.LENGTH_SHORT).show()
@@ -253,6 +258,26 @@ class AssignPhoto(context: Context, bmpOpt: BitmapFactory.Options? = null) : Asy
 //            Toast.makeText(this.mContext, "the error is: " + this.exception!!.message, Toast.LENGTH_SHORT).show()
             throw this.exception!!
         }
+    }
+
+    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        // Raw height and width of image
+        val (height: Int, width: Int) = options.run { outHeight to outWidth }
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        return inSampleSize
     }
 
 
