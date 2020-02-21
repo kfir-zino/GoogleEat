@@ -125,7 +125,7 @@ class LoginActivity : AppCompatActivity() {
                                     //writing new user to DB
 //                                    DBUserRef.child(user!!.uid).setValue(user!!)
                                     val newUser : User = User(user!!.displayName!!,user!!.email!!,
-                                        user!!.providerId,null,null)
+                                        user!!.uid,null,null)
                                     DBUserRef.child(user!!.uid).setValue(newUser)
                                     Toast.makeText(
                                         applicationContext,
