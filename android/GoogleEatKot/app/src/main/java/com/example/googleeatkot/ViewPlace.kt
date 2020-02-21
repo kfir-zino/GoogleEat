@@ -64,34 +64,27 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
         //Load photo of place
         var bmp: Bitmap? = null
             if (Common.currentResult!!.photos != null && Common.currentResult!!.photos!!.isNotEmpty())
-//            AssignPhoto().execute(Common.currentResult!!.photos!![0].photo_reference!!)
-//            shitFace = mURL + "&photoreference=" + Common.currentResult!!.photos!![0].photo_reference!!
-//            try {
-//                val lets_see = Uri.parse(shitFace)
-//            } catch (e: Exception) {
-//                Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
-//            }
-            try {
-//                val url = URL(shitFace)
                 try {
-                    val check_exe = AssignPhoto(this@ViewPlace.mContext).execute(Common.currentResult!!.photos!![0].photo_reference!!)
-                    bmp = check_exe.get()
-//                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                } catch (e : Exception) {
-                    Toast.makeText(this@ViewPlace.mContext, e.message, Toast.LENGTH_SHORT).show()
-                }
-                mInfoWindow.photo.setImageBitmap(bmp)
+    //                val url = URL(shitFace)
+                    try {
+                        val check_exe = AssignPhoto(this@ViewPlace.mContext).execute(Common.currentResult!!.photos!![0].photo_reference!!)
+                        bmp = check_exe.get()
+    //                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                    } catch (e : Exception) {
+                        Toast.makeText(this@ViewPlace.mContext, e.message, Toast.LENGTH_SHORT).show()
+                    }
+                    mInfoWindow.photo.setImageBitmap(bmp)
 
-//                Picasso.with(mContext)
-//                    //                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
-//                    .load(shitFace)
-//                    //                .fit().centerCrop()
-//                    //            .placeholder(R.drawable.places_ic_search)
-//                    //            .error(R.drawable.ic_restaurant_png)
-//                    .into(mInfoWindow.photo)
-            } catch (e: Exception) {
-                Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
-            }
+    //                Picasso.with(mContext)
+    //                    //                .load(getPhotoOfPlace(Common.currentResult!!.photos!![0].photo_reference!!, 1000))
+    //                    .load(shitFace)
+    //                    //                .fit().centerCrop()
+    //                    //            .placeholder(R.drawable.places_ic_search)
+    //                    //            .error(R.drawable.ic_restaurant_png)
+    //                    .into(mInfoWindow.photo)
+                } catch (e: Exception) {
+                    Toast.makeText(this@ViewPlace.mContext, "exception in photo url", Toast.LENGTH_SHORT).show()
+                }
 
     }
     private fun assignRating(){
