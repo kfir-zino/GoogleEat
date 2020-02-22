@@ -15,6 +15,6 @@ class MyPlaceAdapaterClass(val mCtx : Context, val LayoutResId : Int, val MyPlac
         val textViewPlaceName = MyPlaceView.findViewById<TextView>(R.id.textViewPlaceName)
         val FoodPlace = MyPlacesList[position]
         textViewPlaceName.text = FoodPlace.name
-        return super.getView(position, convertView, parent)
+        return MyPlaceView
     }
 }

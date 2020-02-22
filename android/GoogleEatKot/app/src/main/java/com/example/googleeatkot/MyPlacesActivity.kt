@@ -20,8 +20,8 @@ class MyPlacesActivity : AppCompatActivity() {
     lateinit var PlacesListView : ListView
 
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.my_places_list)
         if(currUser == null ){
             Log.w("PERMISSION_ERROR", "Unregistered user in Registered Only Activity")
@@ -30,7 +30,7 @@ class MyPlacesActivity : AppCompatActivity() {
         }
         PlacesListView = findViewById(R.id.PlacesListView)
         MyPlacesList = mutableListOf()
-        MyPlacesDBRef = FirebaseDatabase.getInstance().getReference(currUser!!.uid).child("MyPlaces")
+        MyPlacesDBRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid).child("MyPlaces")
         MyPlacesDBRef.addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -44,7 +44,7 @@ class MyPlacesActivity : AppCompatActivity() {
                         MyPlacesList.add(ListedPlace!!)
                     }
 
-                    val adapter = MyPlaceAdapaterClass(this@MyPlacesActivity,R.layout.my_places_1place,MyPlacesList)
+                    val adapter = MyPlaceAdapaterClass(this@MyPlacesActivity,R.layout.my_places_1place, MyPlacesList)
                     PlacesListView.adapter = adapter
                 }
                 else Toast.makeText(this@MyPlacesActivity, "No Places to Show", Toast.LENGTH_LONG).show()

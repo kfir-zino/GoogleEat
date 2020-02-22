@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GoogleEatKot</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_my_places">My places list</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -19,6 +20,12 @@
     <string name="open_now">Open Now :</string>
     <string name="show_on_map">Show on Map</string>
     <string name="add_to_my_places">add to my places</string>
+    <string name="my_places">My Places</string>
+    <string name="my_groups">My Groups</string>
+    <string name="my_friends">My friends</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="sign_out">Sign Out</string>
     <string name="create_new_group">Create New Group...</string>
 
 </resources>
