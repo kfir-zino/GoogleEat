@@ -17,6 +17,7 @@
 
 
     <ListView
+            android:id="@+id/groups_list"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="@+id/new_group_button"

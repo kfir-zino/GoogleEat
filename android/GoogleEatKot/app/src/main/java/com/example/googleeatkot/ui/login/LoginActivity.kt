@@ -9,6 +9,7 @@ import android.widget.*
 
 import com.example.googleeatkot.R
 import com.example.googleeatkot.User
+import com.example.googleeatkot.UserData
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 // import android.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -124,8 +125,8 @@ class LoginActivity : AppCompatActivity() {
                                 if(!dataSnapshot.exists()){
                                     //writing new user to DB
 //                                    DBUserRef.child(user!!.uid).setValue(user!!)
-                                    val newUser : User = User(user!!.displayName!!,user!!.email!!,
-                                        user!!.uid,null,null)
+                                    val newUser : User = User(UserData(user!!.displayName!!,user!!.email!!,
+                                        user!!.uid),null,null)
                                     DBUserRef.child(user!!.uid).setValue(newUser)
                                     Toast.makeText(
                                         applicationContext,

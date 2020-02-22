@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var drawerLayout: DrawerLayout
     lateinit var navView: NavigationView
     lateinit var placesIntent : Intent
+    lateinit var groupsIntent : Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +104,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_groups -> {
-                Toast.makeText(this, "Messages clicked", Toast.LENGTH_SHORT).show()
+                groupsIntent = Intent(this, MyGroups::class.java)
+                startActivityForResult(groupsIntent, RC_SIGN_IN)
+                Toast.makeText(this, "Groups clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_friends -> {
                 Toast.makeText(this, "Friends clicked", Toast.LENGTH_SHORT).show()
