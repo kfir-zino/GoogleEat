@@ -14,8 +14,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import com.example.googleeatkot.Common.Common
 import com.example.googleeatkot.Model.PlaceDetail
 import com.example.googleeatkot.remote.IGoogleAPIservice
@@ -26,6 +28,7 @@ import retrofit2.Response
 import java.lang.StringBuilder
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_view_place.view.*
 import java.net.URL
 
@@ -34,17 +37,30 @@ import java.net.URL
 
 //class ViewPlace : Fragment() {
 class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
+
+    private var mAuth : FirebaseAuth? = null
     private var mInfoWindow : View
     private var mContext: Context
     var mPlace: PlaceDetail? = null
     var mURL: String? = null
     lateinit var shitFace: String
+
     init {
+        mAuth = FirebaseAuth.getInstance()
         mContext = context
         mInfoWindow = LayoutInflater.from(mContext).inflate(R.layout.fragment_view_place,null)
+        mInfoWindow.findViewById<Button>(R.id.addToPlacesButton).setOnClickListener {
+            Common.currentResult!!.place_id
+        }
         mPlace?.result = Common.currentResult
         mURL="https://maps.googleapis.com/maps/api/place/photo"+"?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
+        lateinit var addToPlaces : View
     }
+
+
+
+
+
     private fun assignWindowText(){
         //Set empty for all tet view
         mInfoWindow.setBackgroundColor(Color.WHITE)
@@ -109,6 +125,8 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
         assignRating()
         return mInfoWindow
     }
+
+
 //
 //    // TODO: Rename and change types of parameters
 //    private var listener: OnFragmentInteractionListener? = null

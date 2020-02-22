@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:context=".ViewPlace">
 
 
     <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="wrap_content"
+            android:layout_height="441dp"
+            android:orientation="vertical">
 
         <ImageView
                 android:id="@+id/photo"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="100dp" />
 
         <LinearLayout
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
             <TextView
                     android:id="@+id/place_name"
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/place_name"
                     android:textSize="20sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             <TextView
                     android:id="@+id/place_address"
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/place_address"
                     android:textSize="16sp"
-                    android:textStyle="italic"/>
+                    android:textStyle="italic" />
 
             <TextView
                     android:id="@+id/open_hours"
@@ -46,24 +46,32 @@
                     android:layout_height="wrap_content"
                     android:text="@string/open_now"
                     android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/rating_bar"
                     style="@style/customRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:max="5" />
 
             <Button
+                    android:id="@+id/btn_show_map"
+                    style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/btn_show_map"
-                    android:text="@string/show_on_map"
-                    style="@style/Widget.AppCompat.Button.Colored"/>
+                    android:text="@string/show_on_map" />
+
+            <Button
+                    android:id="@+id/addToPlacesButton"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_to_my_places" />
 
 
         </LinearLayout>
+
     </LinearLayout>
 
 

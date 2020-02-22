@@ -18,5 +18,6 @@
     <string name="place_address">Place Address</string>
     <string name="open_now">Open Now :</string>
     <string name="show_on_map">Show on Map</string>
+    <string name="add_to_my_places">add to my places</string>
 
 </resources>
