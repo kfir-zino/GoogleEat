@@ -146,7 +146,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     marker.showInfoWindow()
                     true
                 }
-                addToMyPlaces!!.visibility = View.INVISIBLE
+
+                mMap!!.setOnInfoWindowCloseListener {
+                    addToMyPlaces!!.visibility = View.INVISIBLE
+                }
             }
             if (addToMyPlaces != null) {
 
@@ -295,7 +298,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 marker.showInfoWindow()
                 true
             }
-            addToMyPlaces!!.visibility = View.INVISIBLE
+
+            mMap!!.setOnInfoWindowCloseListener {
+                addToMyPlaces!!.visibility = View.INVISIBLE
+            }
         }
         if (addToMyPlaces != null) {
 
@@ -429,8 +435,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 marker.showInfoWindow()
                 true
             }
-            if (addToMyPlaces != null) {
+
+            mMap!!.setOnInfoWindowCloseListener {
                 addToMyPlaces!!.visibility = View.INVISIBLE
+            }
+
+            if (addToMyPlaces != null) {
 
                 addToMyPlaces!!.setOnClickListener {
                     val currUserID = mAuth.currentUser!!.uid
