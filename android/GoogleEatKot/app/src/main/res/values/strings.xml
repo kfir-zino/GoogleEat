@@ -27,5 +27,7 @@
     <string name="update_profile">Update Profile</string>
     <string name="sign_out">Sign Out</string>
     <string name="create_new_group">Create New Group...</string>
+    <string name="enter_group_name">Enter group name...</string>
+    <string name="done">Done!</string>
 
 </resources>
