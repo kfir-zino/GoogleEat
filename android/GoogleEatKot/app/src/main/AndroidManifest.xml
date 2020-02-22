@@ -45,6 +45,14 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.example.googleeatkot.MainActivity"/>
         </activity>
+        <activity
+                android:name=".MyPlacesActivity"
+                android:label="@string/title_activity_my_places"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.googleeatkot.MainActivity"/>
+        </activity>
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

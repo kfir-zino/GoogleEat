@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GoogleEatKot</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_my_places">My places list</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>

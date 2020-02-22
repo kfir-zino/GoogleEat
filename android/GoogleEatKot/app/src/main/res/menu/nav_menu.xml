@@ -3,11 +3,11 @@
 
     <group>
         <item
-                android:id="@+id/nav_profile"
+                android:id="@+id/nav_places"
                 android:icon="@drawable/ic_restaurant_png"
                 android:title="@string/my_places"/>
         <item
-                android:id="@+id/nav_messages"
+                android:id="@+id/nav_groups"
                 android:icon="@drawable/ic_message_black_24dp"
                 android:title="@string/my_groups"/>
         <item

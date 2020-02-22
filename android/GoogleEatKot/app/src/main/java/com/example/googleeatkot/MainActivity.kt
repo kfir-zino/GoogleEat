@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var toolbar: Toolbar
     lateinit var drawerLayout: DrawerLayout
     lateinit var navView: NavigationView
+    lateinit var placesIntent : Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,10 +97,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_profile -> {
+            R.id.nav_places -> {
+                placesIntent = Intent(this, MyPlacesActivity::class.java)
+                startActivityForResult(placesIntent, RC_SIGN_IN)
                 Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_messages -> {
+            R.id.nav_groups -> {
                 Toast.makeText(this, "Messages clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_friends -> {
