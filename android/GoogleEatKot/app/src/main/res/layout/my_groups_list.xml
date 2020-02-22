@@ -7,7 +7,7 @@
         android:id="@+id/new_group_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create New Group..." />
+        android:text="@string/create_new_group" />
 
     <ListView
         android:layout_width="match_parent"

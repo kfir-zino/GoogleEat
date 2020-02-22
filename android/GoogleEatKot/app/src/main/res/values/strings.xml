@@ -19,5 +19,6 @@
     <string name="open_now">Open Now :</string>
     <string name="show_on_map">Show on Map</string>
     <string name="add_to_my_places">add to my places</string>
+    <string name="create_new_group">Create New Group...</string>
 
 </resources>
