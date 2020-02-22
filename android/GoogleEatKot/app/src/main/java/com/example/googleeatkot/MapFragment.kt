@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import android.location.Location
 import android.os.Looper
 import android.view.*
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.IntegerRes
 import androidx.annotation.MainThread
@@ -38,6 +39,9 @@ import com.google.android.libraries.places.compat.ui.PlacePicker
 import com.google.android.libraries.places.compat.Place
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,6 +60,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var lastLocation: Location? = null
     private var locationUpdateState = false
     var url: String = ""
+    private var mAuth : FirebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var DBNewPlace : DatabaseReference
 
     private var latitude : Double = 0.toDouble()
     private var longitude : Double = 0.toDouble()
@@ -71,6 +77,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         var rootView: View? = null
         var mapFragment: SupportMapFragment? = null
         fun newInstance() = MapFragment()
+        var addToMyPlaces : Button? = null
     }
 
     lateinit var mService: IGoogleAPIservice
@@ -90,6 +97,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.map_fragment, container, false)
+
 
 //        currPlaceViewPlace = childFragmentManager.findFragmentById(R.id.view_place) as ViewPlace
 //        currPlaceViewPlace.setMenuVisibility(false)
@@ -128,17 +136,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
             if (mMap != null) {
                 mMap!!.setOnMarkerClickListener { marker ->
+                    addToMyPlaces = rootView!!.findViewById(R.id.addPlace)
                     if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
                         Common.currentResult = Common.placesResults!![marker.snippet]
                     }
 //                    Common.placesResults = currentPlaces!!.results!!
                     mMap!!.setInfoWindowAdapter(ViewPlace(this@MapFragment.requireContext()))
+                    addToMyPlaces!!.visibility = View.VISIBLE
                     marker.showInfoWindow()
-//                    childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
-//                        .replace(R.id.map_fragment, ViewPlace.newInstance())
-//                        .addToBackStack(null)
-//                        .commit()
                     true
+                }
+                addToMyPlaces!!.visibility = View.INVISIBLE
+            }
+            if (addToMyPlaces != null) {
+
+                addToMyPlaces!!.setOnClickListener {
+                    val currUserID = mAuth.currentUser!!.uid
+                    DBNewPlace = FirebaseDatabase.getInstance().getReference("Users").child(currUserID).child("MyPlaces")
+                    val placeId = Common.currentResult!!.place_id
+                    val key = DBNewPlace.push().key
+                    val name: String = Common.currentResult!!.name!!
+                    //adding to DB
+                    DBNewPlace.child(key!!).setValue(FoodPlace(placeId, key, name))
+                    addToMyPlaces!!.visibility = View.INVISIBLE
                 }
             }
 
@@ -266,16 +286,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onStart()
         if (mMap != null) {
             mMap!!.setOnMarkerClickListener { marker ->
+                addToMyPlaces = rootView!!.findViewById(R.id.addPlace)
                 if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
                     Common.currentResult = Common.placesResults!![marker.snippet]
                 }
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
+                addToMyPlaces!!.visibility = View.VISIBLE
                 marker.showInfoWindow()
-//                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
-//                    .replace(R.id.map_fragment, ViewPlace.newInstance())
-//                    .addToBackStack(null)
-//                    .commit()
                 true
+            }
+            addToMyPlaces!!.visibility = View.INVISIBLE
+        }
+        if (addToMyPlaces != null) {
+
+            addToMyPlaces!!.setOnClickListener {
+                val currUserID = mAuth.currentUser!!.uid
+                DBNewPlace = FirebaseDatabase.getInstance().getReference("Users").child(currUserID).child("MyPlaces")
+                val placeId = Common.currentResult!!.place_id
+                val key = DBNewPlace.push().key
+                val name: String = Common.currentResult!!.name!!
+                //adding to DB
+                DBNewPlace.child(key!!).setValue(FoodPlace(placeId, key, name))
+                addToMyPlaces!!.visibility = View.INVISIBLE
             }
         }
 //        if(mMap != null) {
@@ -387,19 +419,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         try {
             mMap!!.setOnMarkerClickListener { marker ->
+                addToMyPlaces = rootView!!.findViewById(R.id.addPlace)
                 if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
                     Common.currentResult = Common.placesResults!![marker.snippet]
                 }
 //                Common.placesResults = currentPlaces!!.results!!
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
+                addToMyPlaces!!.visibility = View.VISIBLE
                 marker.showInfoWindow()
-//                val test = ViewPlace.newInstance()
-//                childFragmentManager!!.beginTransaction()// activity!!.supportFragmentManager!!.beginTransaction()
-//                    .add(R.id.map_fragment, test)
-//                    .addToBackStack(null)
-//                    .commit()
                 true
             }
+            if (addToMyPlaces != null) {
+                addToMyPlaces!!.visibility = View.INVISIBLE
+
+                addToMyPlaces!!.setOnClickListener {
+                    val currUserID = mAuth.currentUser!!.uid
+                    DBNewPlace = FirebaseDatabase.getInstance().getReference("Users").child(currUserID).child("MyPlaces")
+                    val placeId = Common.currentResult!!.place_id
+                    val key = DBNewPlace.push().key
+                    val name: String = Common.currentResult!!.name!!
+                    //adding to DB
+                    DBNewPlace.child(key!!).setValue(FoodPlace(placeId, key, name))
+                    addToMyPlaces!!.visibility = View.INVISIBLE
+                }
+            }
+
+
+
             (activity as MainActivity).scrollPlaces()
         } catch (t : Exception) {
             Toast.makeText(this@MapFragment.requireContext(), "fail to Click"+t.message, Toast.LENGTH_SHORT).show()

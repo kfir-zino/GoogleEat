@@ -29,6 +29,8 @@ import java.lang.StringBuilder
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_view_place.view.*
 import java.net.URL
 
@@ -38,7 +40,6 @@ import java.net.URL
 //class ViewPlace : Fragment() {
 class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
 
-    private var mAuth : FirebaseAuth? = null
     private var mInfoWindow : View
     private var mContext: Context
     var mPlace: PlaceDetail? = null
@@ -46,12 +47,8 @@ class ViewPlace(context: Context) : GoogleMap.InfoWindowAdapter {
     lateinit var shitFace: String
 
     init {
-        mAuth = FirebaseAuth.getInstance()
         mContext = context
         mInfoWindow = LayoutInflater.from(mContext).inflate(R.layout.fragment_view_place,null)
-        mInfoWindow.findViewById<Button>(R.id.addToPlacesButton).setOnClickListener {
-            Common.currentResult!!.place_id
-        }
         mPlace?.result = Common.currentResult
         mURL="https://maps.googleapis.com/maps/api/place/photo"+"?key=AIzaSyASmgAWrMWkLhB26W9iZYjX-Vvtq0xJ0X4&maxwidth=400"
         lateinit var addToPlaces : View

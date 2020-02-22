@@ -12,7 +12,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-<!--    <fragment-->
+    <Button
+            android:id="@+id/addPlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_to_my_places"
+            android:visibility="invisible" />
+
+    <!--    <fragment-->
 <!--            android:id="@+id/view_place"-->
 <!--            android:name="com.example.googleeatkot.ViewPlace"-->
 <!--            android:layout_width="277dp"-->
