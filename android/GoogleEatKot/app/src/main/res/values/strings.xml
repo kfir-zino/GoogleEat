@@ -19,5 +19,11 @@
     <string name="open_now">Open Now :</string>
     <string name="show_on_map">Show on Map</string>
     <string name="add_to_my_places">add to my places</string>
+    <string name="my_places">My Places</string>
+    <string name="my_groups">My Groups</string>
+    <string name="my_friends">My friends</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="sign_out">Sign Out</string>
 
 </resources>
