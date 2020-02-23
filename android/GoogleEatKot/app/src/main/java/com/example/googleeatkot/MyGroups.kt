@@ -45,7 +45,7 @@ class MyGroups : AppCompatActivity()  {
                     val databaseRef = FirebaseDatabase.getInstance().getReference("Groups")
                     val DBUserGroupRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid).child("MyGroups")
                     val key = databaseRef.push().key
-                    val gData = GroupData(key, groupNameText.text.toString())
+                    val gData = GroupData(key, groupNameText.text.toString(),databaseRef.child(key!!))
                     databaseRef.child(key!!).setValue(Group(null, null, gData))
                     DBUserGroupRef.child(key).setValue(gData).addOnCompleteListener {
                         enteredNewGroupButton.visibility = View.INVISIBLE
