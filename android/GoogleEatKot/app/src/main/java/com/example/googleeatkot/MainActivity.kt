@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mAuth: FirebaseAuth? = null
     lateinit var signInButton: Button
     lateinit var signOutButton: Button
-    lateinit var map: MapFragment
+    lateinit var imagesCheckBox: CheckBox
      var currentUser: FirebaseUser? = null
     lateinit var gso: GoogleSignInOptions
     lateinit var loginIntent: Intent
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var navView: NavigationView
     lateinit var placesIntent : Intent
     lateinit var groupsIntent : Intent
+    var showImages : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +64,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         signInButton = findViewById<Button>(R.id.signInButton) as Button
         signOutButton = findViewById<Button>(R.id.signOutButton) as Button
+        imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox
+        if (imagesCheckBox.isChecked) {
+            showImages = true
+        }
 
 //        map = findViewById<MapView>(R.id.mapView) as MapView
 
@@ -167,13 +172,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val url = URL(shitFace)
                 var bmp: Bitmap? = null
                 try {
-//                    val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
-//                    bmp = check_exe.get()
+                    val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
+                    bmp = check_exe.get()
                 } catch (e : Exception) {
                     Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
                 }
-//                placeImage.setImageBitmap(bmp)
-                placeImage.setImageResource(R.drawable.ic_restaurant_png)
+                if (showImages) {
+                    placeImage.setImageBitmap(bmp)
+                } else {
+                    placeImage.setImageResource(R.drawable.ic_restaurant_png)
+                }
+
+
 
 
                 linearLayout.addView(placeImage)
@@ -196,6 +206,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         signInButton = findViewById<Button>(R.id.signInButton) as Button
         signOutButton = findViewById<Button>(R.id.signOutButton) as Button
         miniMap = findViewById(R.id.map_fragment)!!
+        imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox
+        imagesCheckBox.setOnClickListener{
+            showImages = imagesCheckBox.isChecked
+        }
         scrollPlaces()
 
         // map = findViewById<MapView>(R.id.mapView) as MapView
@@ -212,7 +226,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         signOutButton.setOnClickListener{
             this.signOut()
         }
-        updateUI(currentUser);
+        imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox
+        imagesCheckBox.setOnClickListener{
+            showImages = imagesCheckBox.isChecked
+        }
+        updateUI(currentUser)
         scrollPlaces()
 
     }
