@@ -17,7 +17,7 @@ class MyGroups : AppCompatActivity()  {
     lateinit var MyGroupsDBRef : DatabaseReference
     var currUser : FirebaseUser? = FirebaseAuth.getInstance()!!.currentUser
     var OurResult : Int = 0
-    lateinit var MyGroupsList : MutableList<Group>
+    lateinit var MyGroupsList : MutableList<GroupData>
     lateinit var GroupsListView : ListView
     lateinit var newGroupButton : Button
     lateinit var enteredNewGroupButton : Button
@@ -46,8 +46,8 @@ class MyGroups : AppCompatActivity()  {
                     val databaseRef = FirebaseDatabase.getInstance().getReference("Groups")
                     val DBUserGroupRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid).child("MyGroups")
                     val key = databaseRef.push().key
-                    val gData = GroupData(key, groupNameText.text.toString(),databaseRef.child(key!!))
-                    val newGroup = Group(mutableListOf(), null, gData)
+                    val gData = GroupData(key, groupNameText.text.toString())
+                    var newGroup = Group(null, null, gData)
                     //Adding new groups to "Groups" in DB
                     databaseRef.child(key!!).setValue(newGroup).addOnCompleteListener {
                        //successfully added a group to the general group list - removing add buttons
@@ -56,7 +56,7 @@ class MyGroups : AppCompatActivity()  {
                         //adding the user to the group he created by his email
                         val emailList : MutableList<String> = mutableListOf()
                         emailList.add(currUser!!.email!!) //according to Firebase user (not user in DB)
-                        if(newGroup.AddMember2Group(emailList)==1){
+                        if(newGroup.AddMember2Group(emailList, databaseRef.child(key!!),DBUserGroupRef)==1){
                             Toast.makeText(this, "The Creating User Not Found...", Toast.LENGTH_SHORT).show()
                             Log.w("ACCESS_ERROR", "Cannot find registered user by email")
                             OurResult = 1
@@ -72,7 +72,7 @@ class MyGroups : AppCompatActivity()  {
         }
         GroupsListView = findViewById(R.id.groups_list)
         MyGroupsList = mutableListOf()
-        MyGroupsDBRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid)
+        MyGroupsDBRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid).child("MyGroups")
         MyGroupsDBRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -82,7 +82,7 @@ class MyGroups : AppCompatActivity()  {
                 if(GroupsListSnapshot!!.exists()){ //making sure we have places to show
                     MyGroupsList.clear()
                     for(group in GroupsListSnapshot.children){ //going through all places in MyPlaces
-                        val ListedGroup = group.getValue(Group::class.java)
+                        val ListedGroup = group.getValue(GroupData::class.java)
                         MyGroupsList.add(ListedGroup!!)
                     }
 
