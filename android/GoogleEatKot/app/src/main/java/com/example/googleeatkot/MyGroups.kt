@@ -29,6 +29,7 @@ class MyGroups : AppCompatActivity()  {
         if(currUser == null ){
             Log.w("PERMISSION_ERROR", "Unregistered user in Registered Only Activity")
             Toast.makeText(this, "Unregistered User not Allowed Here", Toast.LENGTH_LONG).show()
+            OurResult = 1
             this.finish()
         }
 
@@ -46,10 +47,22 @@ class MyGroups : AppCompatActivity()  {
                     val DBUserGroupRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid).child("MyGroups")
                     val key = databaseRef.push().key
                     val gData = GroupData(key, groupNameText.text.toString(),databaseRef.child(key!!))
-                    databaseRef.child(key!!).setValue(Group(null, null, gData))
-                    DBUserGroupRef.child(key).setValue(gData).addOnCompleteListener {
+                    val newGroup = Group(mutableListOf(), null, gData)
+                    //Adding new groups to "Groups" in DB
+                    databaseRef.child(key!!).setValue(newGroup).addOnCompleteListener {
+                       //successfully added a group to the general group list - removing add buttons
                         enteredNewGroupButton.visibility = View.INVISIBLE
                         groupNameText.visibility = View.INVISIBLE
+                        //adding the user to the group he created by his email
+                        val emailList : MutableList<String> = mutableListOf()
+                        emailList.add(currUser!!.email!!) //according to Firebase user (not user in DB)
+                        if(newGroup.AddMember2Group(emailList)==1){
+                            Toast.makeText(this, "The Creating User Not Found...", Toast.LENGTH_SHORT).show()
+                            Log.w("ACCESS_ERROR", "Cannot find registered user by email")
+                            OurResult = 1
+                            this.finish()
+                        }
+                        Toast.makeText(this, "New Group ${groupNameText.text} was Created", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -65,10 +78,10 @@ class MyGroups : AppCompatActivity()  {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun onDataChange(PlacesListSnapshot: DataSnapshot) {
-                if(PlacesListSnapshot!!.exists()){ //making sure we have places to show
+            override fun onDataChange(GroupsListSnapshot: DataSnapshot) {
+                if(GroupsListSnapshot!!.exists()){ //making sure we have places to show
                     MyGroupsList.clear()
-                    for(group in PlacesListSnapshot.children){ //going through all places in MyPlaces
+                    for(group in GroupsListSnapshot.children){ //going through all places in MyPlaces
                         val ListedGroup = group.getValue(Group::class.java)
                         MyGroupsList.add(ListedGroup!!)
                     }

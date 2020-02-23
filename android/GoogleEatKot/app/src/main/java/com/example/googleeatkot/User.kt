@@ -6,7 +6,8 @@ import com.google.firebase.database.*
 
 
 class UserData(var UserName : String, var UserEmail : String, var UserID : String, var userDBRef : DatabaseReference? = null)
-fun userEmail2UserData(emailList : List<String>) : MutableList<UserData>? {
+
+fun userEmail2UserData(emailList : List<String>) : MutableList<UserData> {
     val DBUserRef = FirebaseDatabase.getInstance().getReference("Users")
     var userDataList : MutableList<UserData> = mutableListOf()
     DBUserRef.addValueEventListener(object : ValueEventListener{
@@ -27,6 +28,7 @@ fun userEmail2UserData(emailList : List<String>) : MutableList<UserData>? {
     })
     return userDataList
 }
+
 data class User(var userData: UserData? = null, var MyPlacesList: List<FoodPlace>? = null,
                 var MyGroupsList: List<GroupData>? = null){
 }
