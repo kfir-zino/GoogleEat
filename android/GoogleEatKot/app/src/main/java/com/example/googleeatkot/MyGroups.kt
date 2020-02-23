@@ -72,7 +72,7 @@ class MyGroups : AppCompatActivity()  {
         }
         GroupsListView = findViewById(R.id.groups_list)
         MyGroupsList = mutableListOf()
-        MyGroupsDBRef = FirebaseDatabase.getInstance().getReference("Groups")
+        MyGroupsDBRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid)
         MyGroupsDBRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
