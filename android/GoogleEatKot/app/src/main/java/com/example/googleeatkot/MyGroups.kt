@@ -63,25 +63,26 @@ class MyGroups : AppCompatActivity()  {
                                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                             }
                             override fun onDataChange(UsersDBList: DataSnapshot) {
-                                var currUser: UserData
+                                var currentUser: UserData
                                 for (user in UsersDBList.children) {
-                                    currUser = user.getValue(User::class.java)!!.userData!!
-                                    if (currUser.UserEmail in emailList) {
-                                        userDataList.add(currUser)
+                                    currentUser = user.getValue(User::class.java)!!.userData!!
+                                    if (currentUser.UserEmail in emailList) {
+                                        userDataList.add(currentUser)
                                     }
                                 }
+                                if(newGroup.AddMember2Group(userDataList, databaseRef.child(key!!),DBUserGroupRef)==1){
+                                    Toast.makeText(this@MyGroups, "The Creating User Not Found...", Toast.LENGTH_SHORT).show()
+                                    Log.w("ACCESS_ERROR", "Cannot find registered user by email")
+                                    OurResult = 1
+//                                    this.finish()
+                                }
+                                Toast.makeText(this@MyGroups, "New Group ${groupNameText.text} was Created", Toast.LENGTH_SHORT).show()
                             }
                         })
                         //var mailWrapper = userEmailWraper()
                         //mailWrapper.userEmail2UserData(emailList)
                         //userDataList  = mailWrapper.userDataList
-                        if(newGroup.AddMember2Group(userDataList, databaseRef.child(key!!),DBUserGroupRef)==1){
-                            Toast.makeText(this, "The Creating User Not Found...", Toast.LENGTH_SHORT).show()
-                            Log.w("ACCESS_ERROR", "Cannot find registered user by email")
-                            OurResult = 1
-                            this.finish()
-                        }
-                        Toast.makeText(this, "New Group ${groupNameText.text} was Created", Toast.LENGTH_SHORT).show()
+
                     }
                 }
 
