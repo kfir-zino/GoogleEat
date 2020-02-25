@@ -57,9 +57,24 @@ class MyGroups : AppCompatActivity()  {
                         val emailList : MutableList<String> = mutableListOf()
                         emailList.add(currUser!!.email!!) //according to Firebase user (not user in DB)
                         var userDataList : MutableList<UserData> = mutableListOf()
-                        var mailWrapper = userEmailWraper()
-                        mailWrapper.userEmail2UserData(emailList)
-                        userDataList  = mailWrapper.userDataList
+                        val DBUserRef = FirebaseDatabase.getInstance().getReference("Users")
+                        DBUserRef.addValueEventListener(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
+                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                            }
+                            override fun onDataChange(UsersDBList: DataSnapshot) {
+                                var currUser: UserData
+                                for (user in UsersDBList.children) {
+                                    currUser = user.getValue(User::class.java)!!.userData!!
+                                    if (currUser.UserEmail in emailList) {
+                                        userDataList.add(currUser)
+                                    }
+                                }
+                            }
+                        })
+                        //var mailWrapper = userEmailWraper()
+                        //mailWrapper.userEmail2UserData(emailList)
+                        //userDataList  = mailWrapper.userDataList
                         if(newGroup.AddMember2Group(userDataList, databaseRef.child(key!!),DBUserGroupRef)==1){
                             Toast.makeText(this, "The Creating User Not Found...", Toast.LENGTH_SHORT).show()
                             Log.w("ACCESS_ERROR", "Cannot find registered user by email")
