@@ -110,7 +110,8 @@ class MyGroups : AppCompatActivity()  {
                     show_members.visibility = View.INVISIBLE
                     val poles = findViewById<Button>(R.id.group_poles)
                     poles.visibility = View.INVISIBLE
-                    val adapter = MyGroupsAdapterClass(this@MyGroups,R.layout.my_groups_1group, MyGroupsList, addMember, show_members, poles)
+                    val UBundle = intent.extras
+                    val adapter = MyGroupsAdapterClass(this@MyGroups,R.layout.my_groups_1group, MyGroupsList, addMember, show_members, poles, UBundle)
                     GroupsListView.adapter = adapter
                 }
                 else Toast.makeText(this@MyGroups, "No Groups to Show", Toast.LENGTH_LONG).show()

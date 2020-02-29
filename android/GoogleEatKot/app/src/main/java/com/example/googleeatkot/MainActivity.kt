@@ -30,6 +30,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import com.google.firebase.database.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
@@ -49,7 +50,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var navView: NavigationView
     lateinit var placesIntent : Intent
     lateinit var groupsIntent : Intent
+    var UBundle: Bundle = Bundle()
+    lateinit var currUserDataDBRef : DatabaseReference
     var showImages : Boolean = false
+    lateinit var velUsers : ValueEventListener
+    lateinit var currUserData : UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +110,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_places -> {
                 placesIntent = Intent(this, MyPlacesActivity::class.java)
+                placesIntent.putExtras(UBundle)
                 startActivityForResult(placesIntent, RC_SIGN_IN)
                 Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_groups -> {
                 groupsIntent = Intent(this, MyGroups::class.java)
+                groupsIntent.putExtras(UBundle)
                 startActivityForResult(groupsIntent, RC_SIGN_IN)
                 Toast.makeText(this, "Groups clicked", Toast.LENGTH_SHORT).show()
             }
@@ -171,13 +178,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mURL + "&photoreference=" + currPlaces[keys[i]]!!.photos!![0].photo_reference!!
                 val url = URL(shitFace)
                 var bmp: Bitmap? = null
-                try {
-                    val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
-                    bmp = check_exe.get()
-                } catch (e : Exception) {
-                    Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
-                }
                 if (showImages) {
+                    try {
+                        val check_exe = AssignPhoto(this@MainActivity.baseContext).execute(currPlaces[keys[i]]!!.photos!![0].photo_reference!!)
+                        bmp = check_exe.get()
+                    } catch (e : Exception) {
+                        Toast.makeText(this@MainActivity.baseContext, e.message, Toast.LENGTH_SHORT).show()
+                    }
                     placeImage.setImageBitmap(bmp)
                 } else {
                     placeImage.setImageResource(R.drawable.ic_restaurant_png)
@@ -210,6 +217,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         imagesCheckBox.setOnClickListener{
             showImages = imagesCheckBox.isChecked
         }
+        currentUser = mAuth!!.currentUser
+        updateUI(currentUser)
         scrollPlaces()
 
         // map = findViewById<MapView>(R.id.mapView) as MapView
@@ -219,7 +228,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = mAuth!!.currentUser
         signInButton.setOnClickListener{
             this.signIn()
         }
@@ -230,8 +238,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         imagesCheckBox.setOnClickListener{
             showImages = imagesCheckBox.isChecked
         }
-        updateUI(currentUser)
-        scrollPlaces()
+       // scrollPlaces()
 
     }
 
@@ -263,7 +270,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (data.hasExtra("FBuser")) {
                     currentUser = data.extras.getParcelable("FBuser")
                     gso =  data.extras.getParcelable("gso")!!
-
                 }
             }
         }
@@ -279,7 +285,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         else {
             signInButton.visibility = View.INVISIBLE
             signOutButton.visibility = View.VISIBLE
-            this.signIn()
+            currUserDataDBRef = FirebaseDatabase.getInstance().getReference("Users").child(account.uid)
+            velUsers = currUserDataDBRef.addValueEventListener(object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onDataChange(currUserDBData: DataSnapshot) {
+
+                    currUserData = currUserDBData.getValue(User::class.java)!!.userData!!
+                    UBundle.putString("UserName",currUserData.UserName)
+                    UBundle.putString("UserEmail", currUserData.UserEmail)
+                    UBundle.putString("UserID", currUserData.UserID)
+                }
+            })
+
         }
     }
 

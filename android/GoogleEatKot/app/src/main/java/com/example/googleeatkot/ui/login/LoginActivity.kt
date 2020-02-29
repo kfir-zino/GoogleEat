@@ -125,8 +125,8 @@ class LoginActivity : AppCompatActivity() {
                                 if(!dataSnapshot.exists()){
                                     //writing new user to DB
 //                                    DBUserRef.child(user!!.uid).setValue(user!!)
-                                    val newUser : User = User(UserData(user!!.displayName!!,user!!.email!!,
-                                        user!!.uid),null,null)
+                                    val newUserData = UserData(user!!.displayName!!,user!!.email!!, user!!.uid)
+                                    val newUser  = User(newUserData,null,null)
                                     DBUserRef.child(user!!.uid).setValue(newUser)
                                     Toast.makeText(
                                         applicationContext,

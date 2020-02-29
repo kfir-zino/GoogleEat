@@ -5,10 +5,7 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
@@ -31,12 +28,14 @@ class GroupPolesActivity : AppCompatActivity() {
     lateinit var newPoleButton : Button
     lateinit var endPoleButton : Button
     lateinit var addPlaces2Pole : Button
-    var userDataBundle : Bundle? = intent.extras
-    val currAppUser = UserData(userDataBundle!!.getString("UserName"),userDataBundle!!.getString("UserEmail"),userDataBundle!!.getString("UserID"))
+    lateinit var userDataBundle : Bundle
+    lateinit var currAppUser : UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_poles)
+        userDataBundle= intent.extras
+        currAppUser = UserData(userDataBundle!!.getString("UserName"),userDataBundle!!.getString("UserEmail"),userDataBundle!!.getString("UserID"))
         if(currUser == null ){
             Log.w("PERMISSION_ERROR", "Unregistered user in Registered Only Activity")
             Toast.makeText(this, "Unregistered User not Allowed Here", Toast.LENGTH_LONG).show()
@@ -164,7 +163,7 @@ class GroupPolesActivity : AppCompatActivity() {
                         else{
                             //activePole - only one can be active
                             activePole = GroupPole(currentPole!!, mutableListOf())
-                            for (place in groupPoles.child(currentPole!!.poleKey).children) {
+                            for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
                                 val foodPlace4pole = place.getValue(FoodPlace::class.java)
                                 placePoleVoters.clear()
@@ -185,6 +184,7 @@ class GroupPolesActivity : AppCompatActivity() {
                     val oldPolesAdapter = ManyPolesAdapter(this@GroupPolesActivity,R.layout.poles_1pole,groupPolesList,currAppUser)
                     oldPolesListView.adapter = oldPolesAdapter
                     val activePoleAdapter = PolePlacesAdapter(this@GroupPolesActivity,R.id.one_place_of_pole,activePole.placesList,currAppUser,true)
+                    activePoleView.findViewById<TextView>(R.id.textView_poleName).text = activePole.poleData!!.poleName
                     activePoleView.findViewById<ListView>(R.id.places_of_pole).adapter = activePoleAdapter
                 }
 
@@ -210,7 +210,7 @@ class GroupPolesActivity : AppCompatActivity() {
         builder.setTitle("Create New Pole")
         val inflater = LayoutInflater.from(this)
         val NewPoleDialogView = inflater.inflate(R.layout.new_pole_dialog,null)
-        val poleNameText = NewPoleDialogView.findViewById<TextInputEditText>(R.id.InputEditText_newPoleName)
+        val poleNameText = NewPoleDialogView.findViewById<EditText>(R.id.EditText_newPoleName)
         builder.setView(NewPoleDialogView)
 
         builder.setPositiveButton("Create Pole"){ p0, p1 ->
@@ -230,6 +230,8 @@ class GroupPolesActivity : AppCompatActivity() {
         builder.setNegativeButton("Cancel"){ p0, p1 ->
             Toast.makeText(this@GroupPolesActivity, "New Pole Canceled :(", Toast.LENGTH_LONG).show()
         }
+        val alert = builder.create()
+        alert.show()
 
     }
     fun showEndPoleDialog(){

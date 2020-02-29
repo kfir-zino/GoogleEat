@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -18,18 +20,17 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.my_groups_1group.view.*
 import kotlinx.android.synthetic.main.my_groups_list.view.*
 
-class MyGroupsAdapterClass (val mCtx : Context, val LayoutResId : Int, val MyGroupsList : List<GroupData>, val add_member: Button, val show_members: Button, val poles: Button)
+class MyGroupsAdapterClass (val mCtx : Context, val LayoutResId : Int, val MyGroupsList : List<GroupData>, val add_member: Button, val show_members: Button, val poles: Button, val UBundle : Bundle)
 : ArrayAdapter<GroupData>(mCtx, LayoutResId, MyGroupsList) {
-    lateinit var poleIntent: Intent
+//    lateinit var poleIntent: Intent
 
     @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val layoutInflater: LayoutInflater = LayoutInflater.from(mCtx)
         val MyGroupView: View = layoutInflater.inflate(LayoutResId, null)
-//        add_member.visibility = Button.INVISIBLE
-//        show_members.visibility = View.INVISIBLE
-//        poles.visibility = View.INVISIBLE
+        val currGroup = MyGroupsList[position]
         val textViewGroupName = MyGroupView.findViewById<TextView>(R.id.textViewGroupName)
+        textViewGroupName.text = currGroup.name
         var currUser : FirebaseUser? = FirebaseAuth.getInstance()!!.currentUser
         textViewGroupName.setOnClickListener {
             add_member.visibility = Button.VISIBLE
@@ -120,16 +121,18 @@ class MyGroupsAdapterClass (val mCtx : Context, val LayoutResId : Int, val MyGro
 //                })
             }
 
-            poles.setOnClickListener {
-//                poleIntent = Intent(this, GroupPolesActivity::class.java)
+            poles.setOnClickListener {v ->
+                val poleIntent = Intent(mCtx, GroupPolesActivity::class.java)
+                val currentBundle = UBundle
+                currentBundle.putString("GroupKey",currGroup.key)
+                poleIntent.putExtras(currentBundle)
+                mCtx.startActivity(poleIntent)
             }
             Toast.makeText(mCtx, "you clicked on: " + textViewGroupName.text, Toast.LENGTH_LONG).show()
 //            add_member.visibility = Button.INVISIBLE
 //            show_members.visibility = View.INVISIBLE
 //            poles.visibility = View.INVISIBLE
         }
-        val currGroup = MyGroupsList[position]
-        textViewGroupName.text = currGroup.name
         return MyGroupView
     }
 }
