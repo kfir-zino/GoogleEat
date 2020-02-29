@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView_ActivePole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Active Pole"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <Button
+                android:id="@+id/button_Deactivate_pole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End Pole"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/button_newPole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create New Pole"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/button_addPlace2Pole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Places From My Places..."
+            />
+
+
+        <include
+            layout="@layout/poles_1pole"
+            android:id="@+id/pole1_ActivePole"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"/>
+        <TextView
+            android:id="@+id/textView_PastPoles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Past Group Poles"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+        <ListView
+            android:id="@+id/ListView_PastPoles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView >
