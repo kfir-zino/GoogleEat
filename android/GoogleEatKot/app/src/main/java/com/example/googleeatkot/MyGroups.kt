@@ -3,15 +3,17 @@ package com.example.googleeatkot
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.my_groups_1group.view.*
+import kotlinx.android.synthetic.main.my_groups_list.*
 
 class MyGroups : AppCompatActivity()  {
     lateinit var MyGroupsDBRef : DatabaseReference
@@ -47,7 +49,7 @@ class MyGroups : AppCompatActivity()  {
                     val DBUserGroupRef = FirebaseDatabase.getInstance().getReference("Users").child(currUser!!.uid).child("MyGroups")
                     val key = databaseRef.push().key
                     val gData = GroupData(key, groupNameText.text.toString())
-                    var newGroup = Group(null, null, gData)
+                    val newGroup = Group(null, null, gData)
                     //Adding new groups to "Groups" in DB
                     databaseRef.child(key!!).setValue(newGroup).addOnCompleteListener {
                        //successfully added a group to the general group list - removing add buttons
@@ -79,10 +81,6 @@ class MyGroups : AppCompatActivity()  {
                                 Toast.makeText(this@MyGroups, "New Group ${groupNameText.text} was Created", Toast.LENGTH_SHORT).show()
                             }
                         })
-                        //var mailWrapper = userEmailWraper()
-                        //mailWrapper.userEmail2UserData(emailList)
-                        //userDataList  = mailWrapper.userDataList
-
                     }
                 }
 
@@ -106,14 +104,24 @@ class MyGroups : AppCompatActivity()  {
                         MyGroupsList.add(ListedGroup!!)
                     }
 
-                    val adapter = MyGroupsAdapterClass(this@MyGroups,R.layout.my_groups_1group, MyGroupsList)
+                    val addMember = findViewById<Button>(R.id.add_member_to_group)
+                    addMember.visibility = View.INVISIBLE
+                    val show_members = findViewById<Button>(R.id.show_group_members)
+                    show_members.visibility = View.INVISIBLE
+                    val poles = findViewById<Button>(R.id.group_poles)
+                    poles.visibility = View.INVISIBLE
+                    val adapter = MyGroupsAdapterClass(this@MyGroups,R.layout.my_groups_1group, MyGroupsList, addMember, show_members, poles)
                     GroupsListView.adapter = adapter
                 }
                 else Toast.makeText(this@MyGroups, "No Groups to Show", Toast.LENGTH_LONG).show()
+
             }
+
+
 
         })
     }
+
     override fun finish() {
         if(OurResult== 0) setResult(Activity.RESULT_OK)
         else setResult(Activity.RESULT_CANCELED)

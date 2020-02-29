@@ -8,10 +8,9 @@
 
     <Button
             android:id="@+id/new_group_button"
-            android:layout_width="0dp"
+            android:layout_width="411dp"
             android:layout_height="wrap_content"
             android:text="@string/create_new_group"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,30 +19,63 @@
             android:id="@+id/groups_list"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="@+id/new_group_button"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/new_group_button" />
 
     <EditText
             android:id="@+id/group_name_text"
             android:layout_width="230dp"
             android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:autofillHints="Here you enter the name of your new group."
             android:ems="10"
             android:inputType="textPersonName"
             android:text="@string/enter_group_name"
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/group_name_button"
+            app:layout_constraintHorizontal_bias="0.596"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_group_button"
-            android:autofillHints="Here you enter the name of your new group." />
+            app:layout_constraintTop_toBottomOf="@+id/new_group_button" />
 
     <Button
             android:id="@+id/group_name_button"
             android:layout_width="88dp"
             android:layout_height="54dp"
-            android:layout_marginEnd="28dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="36dp"
             android:text="@string/done"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_group_button" />
+            app:layout_constraintTop_toTopOf="@+id/groups_list" />
+
+    <Button
+            android:id="@+id/add_member_to_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Add member"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+            android:id="@+id/show_group_members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="show members"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/group_poles"
+            app:layout_constraintStart_toEndOf="@+id/add_member_to_group" />
+
+    <Button
+            android:id="@+id/group_poles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="poles"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
