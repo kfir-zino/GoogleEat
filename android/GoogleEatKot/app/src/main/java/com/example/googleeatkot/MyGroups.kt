@@ -42,7 +42,9 @@ class MyGroups : AppCompatActivity()  {
             enteredNewGroupButton.visibility = View.VISIBLE
             groupNameText.visibility = View.VISIBLE
             enteredNewGroupButton.setOnClickListener {
-                if (groupNameText.text == "") {
+                if (groupNameText.text.isEmpty()) {
+                    enteredNewGroupButton.visibility = View.INVISIBLE
+                    groupNameText.visibility = View.INVISIBLE
                     Toast.makeText(this, "Group name is empty, please enter group name...", Toast.LENGTH_SHORT).show()
                 } else {
                     val databaseRef = FirebaseDatabase.getInstance().getReference("Groups")
