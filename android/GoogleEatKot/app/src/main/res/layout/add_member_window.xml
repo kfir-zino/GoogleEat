@@ -13,7 +13,7 @@
             android:layout_marginTop="32dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="add member name"
+            android:hint="add member name"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="47dp" />
 
