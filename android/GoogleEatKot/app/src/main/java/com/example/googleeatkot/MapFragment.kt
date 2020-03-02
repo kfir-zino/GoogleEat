@@ -40,8 +40,7 @@ import com.google.android.libraries.places.compat.Place
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -155,13 +154,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 addToMyPlaces!!.setOnClickListener {
                     val currUserID = mAuth.currentUser!!.uid
+                    var inPlaces = false
                     DBNewPlace = FirebaseDatabase.getInstance().getReference("Users").child(currUserID).child("MyPlaces")
-                    val placeId = Common.currentResult!!.place_id
-                    val key = DBNewPlace.push().key
-                    val name: String = Common.currentResult!!.name!!
-                    //adding to DB
-                    DBNewPlace.child(key!!).setValue(FoodPlace(placeId, key, name))
-                    addToMyPlaces!!.visibility = View.INVISIBLE
+                    DBNewPlace.addValueEventListener(object : ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+
+                        override fun onDataChange(userPlaces: DataSnapshot) {
+                            for (place in userPlaces.children) {
+                                if (place.getValue(FoodPlace::class.java)!!.name == Common.currentResult!!.name!!)
+                                    inPlaces = true
+                            }
+                            if (!inPlaces) {
+                                val placeId = Common.currentResult!!.place_id
+                                val key = DBNewPlace.push().key
+                                val name: String = Common.currentResult!!.name!!
+                                //adding to DB
+                                DBNewPlace.child(key!!).setValue(FoodPlace(placeId, key, name))
+                                addToMyPlaces!!.visibility = View.INVISIBLE
+                            }
+                        }
+                    })
+
                 }
             }
 
