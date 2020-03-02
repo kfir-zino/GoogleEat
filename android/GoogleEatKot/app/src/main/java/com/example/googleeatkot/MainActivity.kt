@@ -127,7 +127,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Update clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_logout -> {
-                Toast.makeText(this, "Sign out clicked", Toast.LENGTH_SHORT).show()
+                if (currentUser == null){
+                    Toast.makeText(this, "You are not signed in.", Toast.LENGTH_SHORT).show()
+                } else {
+                    this.signIn()
+                    this.signOut()
+                }
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -232,6 +237,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this.signIn()
         }
         signOutButton.setOnClickListener{
+            this.signIn()
             this.signOut()
         }
         imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox

@@ -173,6 +173,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                 //adding to DB
                                 DBNewPlace.child(key!!).setValue(FoodPlace(placeId, key, name))
                                 addToMyPlaces!!.visibility = View.INVISIBLE
+                                Toast.makeText(this@MapFragment.requireContext(), name + "was added to My Places", Toast.LENGTH_SHORT).show()
                             }
                         }
                     })
