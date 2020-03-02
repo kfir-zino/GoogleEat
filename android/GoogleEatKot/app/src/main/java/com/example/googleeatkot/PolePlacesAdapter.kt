@@ -1,5 +1,6 @@
 package com.example.googleeatkot
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 class PolePlacesAdapter (val mCtx : Context, val LayoutResId : Int, val PolesPlacesList : List<PolePlace>,
                          val currAppUser : UserData, val poleActive : Boolean = false)
     : ArrayAdapter<PolePlace>(mCtx, LayoutResId, PolesPlacesList) {
+    @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val layoutInflater: LayoutInflater = LayoutInflater.from(mCtx)
         val polePlaceView: View = layoutInflater.inflate(LayoutResId, null)
@@ -30,11 +32,13 @@ class PolePlacesAdapter (val mCtx : Context, val LayoutResId : Int, val PolesPla
                 vote.isEnabled = false
             }
             vote.setOnClickListener {
+                textViewPoleName.text = currPlace.foodPlace!!.name
                 //save new voter as current user
                 currPlace.polePlaceDBRef!!.child("Voters").child(currAppUser.UserID)
                     .setValue(currAppUser)
                 vote.text = "Voted"
                 vote.isEnabled = false
+                numOfVotes.text = currPlace.votersList!!.size.toString()
             }
         }
         else {

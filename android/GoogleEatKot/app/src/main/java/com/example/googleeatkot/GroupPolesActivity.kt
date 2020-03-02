@@ -139,14 +139,14 @@ class GroupPolesActivity : AppCompatActivity() {
                 else{
                     groupPolesList.clear()
                     for(pole in groupPoles.children){
-                        var currentPole = pole.getValue(PoleData::class.java)
+                        var currentPole = pole.child("PoleData").getValue(PoleData::class.java)
                         if(!(currentPole!!.active)) {
                             endPoleButton.visibility = View.INVISIBLE
                             addPlaces2Pole.visibility = View.INVISIBLE
                             groupPolesList.add(GroupPole(currentPole!!, mutableListOf()))
                             for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
-                                val foodPlace4pole = place.child("FoodPlaceData").getValue(FoodPlace::class.java)
+                                val foodPlace4pole = place.getValue(FoodPlace::class.java)
                                 placePoleVoters.clear()
                                 for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
@@ -166,9 +166,9 @@ class GroupPolesActivity : AppCompatActivity() {
                             activePole = GroupPole(currentPole!!, mutableListOf())
                             for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
-                                val foodPlace4pole = place.child("FoodPlaceData").getValue(FoodPlace::class.java)
+                                val foodPlace4pole = place.getValue(FoodPlace::class.java)
                                 placePoleVoters.clear()
-                                for (member in groupPoles.child(currentPole!!.poleKey).child(place.key!!).child("Voters").children) {
+                                for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
                                     placePoleVoters.add(voter!!)
                                 }
@@ -176,7 +176,7 @@ class GroupPolesActivity : AppCompatActivity() {
                                     PolePlace(
                                         foodPlace4pole,
                                         placePoleVoters,
-                                        MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!)
+                                        MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!).child("PolePlaces").child(foodPlace4pole!!.key!!)
                                     )
                                 )
                             }
@@ -184,7 +184,7 @@ class GroupPolesActivity : AppCompatActivity() {
                     }
                     val oldPolesAdapter = ManyPolesAdapter(this@GroupPolesActivity,R.layout.poles_1pole,groupPolesList,currAppUser)
                     oldPolesListView.adapter = oldPolesAdapter
-                    val activePoleAdapter = PolePlacesAdapter(this@GroupPolesActivity,R.id.one_place_of_pole,activePole.placesList,currAppUser,true)
+                    val activePoleAdapter = PolePlacesAdapter(this@GroupPolesActivity,R.layout.poles_1pole_1place,activePole.placesList,currAppUser,true)
                     activePoleView.findViewById<TextView>(R.id.textView_poleName).text = activePole.poleData!!.poleName
                     activePoleView.findViewById<ListView>(R.id.places_of_pole).adapter = activePoleAdapter
                 }
@@ -193,7 +193,7 @@ class GroupPolesActivity : AppCompatActivity() {
 
         })
         newPoleButton.setOnClickListener(){
-            val activePolesDBRefrence = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("ActivePole")
+            val activePolesDBRefrence = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("Poles").child("ActivePole")
             activePolesDBRefrence.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
                 }
@@ -308,7 +308,7 @@ class GroupPolesActivity : AppCompatActivity() {
                     currPlace = place.getValue(FoodPlace::class.java)
                     userFoodPlacesList.add(currPlace!!)
                 }
-                val placesAdapter = MyPlaceAdapaterClass(this@GroupPolesActivity,R.layout.add_places_1place, userFoodPlacesList)
+                val placesAdapter = PolePlaceAdapter(this@GroupPolesActivity,R.layout.add_places_1place, userFoodPlacesList)
                 placesListView.adapter = placesAdapter
                 builder.setView(addPlacesDialogView)
                 builder.setPositiveButton("Add Selected Places") { p0, p1 ->
@@ -342,14 +342,15 @@ class GroupPolesActivity : AppCompatActivity() {
                                     currGroupPolesDBRef.child("PolesList").child(currPoleKey).child("PolePlaces").child(place.key!!).setValue(place)
                                 }
                             }
-                            builder.setNegativeButton("Cancel"){ p0, p1 ->
-                                Toast.makeText(this@GroupPolesActivity, "Adding Places Canceled :(", Toast.LENGTH_LONG).show()
-                            }
-                            val alert = builder.create()
-                            alert.show()
+
                         }
                     })
                 }
+                builder.setNegativeButton("Cancel"){ p0, p1 ->
+                    Toast.makeText(this@GroupPolesActivity, "Adding Places Canceled :(", Toast.LENGTH_LONG).show()
+                }
+                val alert = builder.create()
+                alert.show()
             }
         })
     }
