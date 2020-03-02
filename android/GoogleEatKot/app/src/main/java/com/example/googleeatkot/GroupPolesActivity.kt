@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -122,7 +123,7 @@ class GroupPolesActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        vel = MyGroupPolesDBRef.addValueEventListener(object : ValueEventListener{
+        vel = MyGroupPolesDBRef.child("PolesList").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -143,11 +144,11 @@ class GroupPolesActivity : AppCompatActivity() {
                             endPoleButton.visibility = View.INVISIBLE
                             addPlaces2Pole.visibility = View.INVISIBLE
                             groupPolesList.add(GroupPole(currentPole!!, mutableListOf()))
-                            for (place in groupPoles.child(currentPole!!.poleKey).children) {
+                            for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
-                                val foodPlace4pole = place.getValue(FoodPlace::class.java)
+                                val foodPlace4pole = place.child("FoodPlaceData").getValue(FoodPlace::class.java)
                                 placePoleVoters.clear()
-                                for (member in groupPoles.child(currentPole!!.poleKey).child("Voters").children) {
+                                for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
                                     placePoleVoters.add(voter!!)
                                 }
@@ -155,7 +156,7 @@ class GroupPolesActivity : AppCompatActivity() {
                                     PolePlace(
                                         foodPlace4pole,
                                         placePoleVoters,
-                                        MyGroupPolesDBRef.child(currentPole.poleKey!!)
+                                        MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!)
                                     )
                                 )
                             }
@@ -165,9 +166,9 @@ class GroupPolesActivity : AppCompatActivity() {
                             activePole = GroupPole(currentPole!!, mutableListOf())
                             for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
-                                val foodPlace4pole = place.getValue(FoodPlace::class.java)
+                                val foodPlace4pole = place.child("FoodPlaceData").getValue(FoodPlace::class.java)
                                 placePoleVoters.clear()
-                                for (member in groupPoles.child(currentPole!!.poleKey).child("Voters").children) {
+                                for (member in groupPoles.child(currentPole!!.poleKey).child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
                                     placePoleVoters.add(voter!!)
                                 }
@@ -175,7 +176,7 @@ class GroupPolesActivity : AppCompatActivity() {
                                     PolePlace(
                                         foodPlace4pole,
                                         placePoleVoters,
-                                        MyGroupPolesDBRef.child(currentPole.poleKey!!)
+                                        MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!)
                                     )
                                 )
                             }
@@ -192,11 +193,26 @@ class GroupPolesActivity : AppCompatActivity() {
 
         })
         newPoleButton.setOnClickListener(){
-            //todo - add condition that there is no active pole, id so - offer to end it
-            showNewPoleDialog()
+            val activePolesDBRefrence = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("ActivePole")
+            activePolesDBRefrence.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+                }
+
+                override fun onDataChange(activePole: DataSnapshot) {
+                    if(activePole.exists()){//there is an active pole
+                        Toast.makeText(this@GroupPolesActivity, "There is an Active pole Running", Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        showNewPoleDialog()
+                    }
+                }
+            })
         }
         endPoleButton.setOnClickListener(){
             showEndPoleDialog()
+        }
+        addPlaces2Pole.setOnClickListener(){
+            showAddPlacesDialog()
         }
     }
 
@@ -223,8 +239,11 @@ class GroupPolesActivity : AppCompatActivity() {
             }
             val newPoleKey = polesDBRefrence.push().key
             val NewPole = PoleData(newPoleName,newPoleKey!!,true)
-            polesDBRefrence.child(newPoleKey).setValue(NewPole)
+            polesDBRefrence.child("PolesList").child(newPoleKey).child("PoleData").setValue(NewPole)
+            polesDBRefrence.child("ActivePole").setValue(newPoleKey)
             Toast.makeText(this@GroupPolesActivity, "Pole Added :)", Toast.LENGTH_LONG).show()
+            endPoleButton.visibility = View.VISIBLE
+            addPlaces2Pole.visibility = View.VISIBLE
         }
 
         builder.setNegativeButton("Cancel"){ p0, p1 ->
@@ -239,9 +258,99 @@ class GroupPolesActivity : AppCompatActivity() {
         builder.setTitle("End Current Pole")
         builder.setMessage("Are you sure you want to end the pole?")
         builder.setPositiveButton("Yes"){p0, p1 ->
-            //todo - make active pole inactive, and hide relevant buttons
+            val polesDBRefrence = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("Poles")
+            val activeVel = polesDBRefrence.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onDataChange(polesList: DataSnapshot) {
+                    for(pole in polesList.children){
+                        val currPole = pole.getValue(PoleData::class.java)!!
+                        if(currPole.active){
+                            val updatePole = PoleData(currPole.poleName,currPole.poleKey,false)
+                            polesDBRefrence.child(currPole.poleKey).setValue(updatePole)
+                            polesDBRefrence.parent!!.child("ActivePole").removeValue()
+                            endPoleButton.visibility = View.INVISIBLE
+                            addPlaces2Pole.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+            })
         }
         builder.setNegativeButton("No"){p0, p1 ->
         }
+        val alert = builder.create()
+        alert.show()
+    }
+    fun showAddPlacesDialog(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add Places to Pole")
+        val inflater = LayoutInflater.from(this)
+        val addPlacesDialogView = inflater.inflate(R.layout.add_places_dialog,null)
+        val placesListView = addPlacesDialogView.findViewById<ListView>(R.id.addPlacesListView)
+        var placesListAdapter : MyPlaceAdapaterClass
+        //read all places of user, and save them into a list of <foodPlaces>
+        var userFoodPlacesList = mutableListOf<FoodPlace>()
+        val currUserMyPlacesDBRef = FirebaseDatabase.getInstance()!!.getReference("Users").child(currAppUser.UserID).child("MyPlaces")
+        currUserMyPlacesDBRef.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(currUserPlaces: DataSnapshot) {
+                userFoodPlacesList.clear()
+                if(!(currUserPlaces.exists())){ //User has no places to show
+                    Toast.makeText(this@GroupPolesActivity, "You have no places...", Toast.LENGTH_LONG).show()
+                }
+                var currPlace : FoodPlace?
+                for(place in currUserPlaces.children){
+                    currPlace = place.getValue(FoodPlace::class.java)
+                    userFoodPlacesList.add(currPlace!!)
+                }
+                val placesAdapter = MyPlaceAdapaterClass(this@GroupPolesActivity,R.layout.add_places_1place, userFoodPlacesList)
+                placesListView.adapter = placesAdapter
+                builder.setView(addPlacesDialogView)
+                builder.setPositiveButton("Add Selected Places") { p0, p1 ->
+                    var places2Add = mutableListOf<FoodPlace>()
+                    val currGroupPolesDBRef =
+                        FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("Poles")
+                    for (i in 0 until userFoodPlacesList.size) {
+                        if (placesListView.get(i).findViewById<CheckBox>(R.id.checkBox).isChecked) {
+                            places2Add.add(userFoodPlacesList[i])
+                        }
+                    }
+                    currGroupPolesDBRef.addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+
+                        override fun onDataChange(currGroupPolesDB: DataSnapshot) {
+                            val currPoleKey = currGroupPolesDB.child("ActivePole").value.toString()
+                            for (place in places2Add) {
+                                //check if the place doesn't already belong to the pole places - by googleID
+                                //add place to .child("Poles").child(Polekey).child("PolePlaces").child(placeKey).child("FoodPlaceData")
+                                var deletedFlag = false
+                                for(polePlace in currGroupPolesDB.child("PolesList").child(currPoleKey).child("PolePlaces").children){
+                                    if(place.placeID == polePlace.getValue(FoodPlace::class.java)!!.placeID){
+                                        places2Add.remove(place)
+                                        deletedFlag = true
+                                        break
+                                    }
+                                }
+                                if(!deletedFlag){
+                                    currGroupPolesDBRef.child("PolesList").child(currPoleKey).child("PolePlaces").child(place.key!!).setValue(place)
+                                }
+                            }
+                            builder.setNegativeButton("Cancel"){ p0, p1 ->
+                                Toast.makeText(this@GroupPolesActivity, "Adding Places Canceled :(", Toast.LENGTH_LONG).show()
+                            }
+                            val alert = builder.create()
+                            alert.show()
+                        }
+                    })
+                }
+            }
+        })
     }
 }
