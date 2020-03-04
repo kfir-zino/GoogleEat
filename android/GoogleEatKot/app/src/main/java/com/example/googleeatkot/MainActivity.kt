@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var signInButton: Button
     lateinit var signOutButton: Button
     lateinit var imagesCheckBox: CheckBox
-     var currentUser: FirebaseUser? = null
+    var currentUser: FirebaseUser? = null
     lateinit var gso: GoogleSignInOptions
     lateinit var loginIntent: Intent
     lateinit var miniMap: MapView
@@ -228,6 +228,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // map = findViewById<MapView>(R.id.mapView) as MapView
         // this.onCreateView()
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        signInButton.setOnClickListener{
+            this.signIn()
+        }
+        signOutButton.setOnClickListener{
+            this.signIn()
+            this.signOut()
+        }
+        imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox
+        imagesCheckBox.setOnClickListener{
+            showImages = imagesCheckBox.isChecked
+        }
         super.onResume()
     }
     override fun onStart() {

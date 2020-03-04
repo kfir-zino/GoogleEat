@@ -16,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase
 class PolePlacesAdapter (val mCtx : Context, val LayoutResId : Int, val PolesPlacesList : List<PolePlace>,
                          val currAppUser : UserData, val poleActive : Boolean = false)
     : ArrayAdapter<PolePlace>(mCtx, LayoutResId, PolesPlacesList) {
-    @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val layoutInflater: LayoutInflater = LayoutInflater.from(mCtx)
         val polePlaceView: View = layoutInflater.inflate(LayoutResId, null)
@@ -27,9 +26,11 @@ class PolePlacesAdapter (val mCtx : Context, val LayoutResId : Int, val PolesPla
         textViewPoleName.text = currPlace.foodPlace!!.name
         numOfVotes.text = currPlace.votersList!!.size.toString()
         if(poleActive) {
-            if (currAppUser in currPlace.votersList) {//this user has already voted for this place
-                vote.text = "Voted"
-                vote.isEnabled = false
+            for  (voter in currPlace.votersList){
+                if (currAppUser.UserID in voter.UserID) {//this user has already voted for this place
+                    vote.text = "Voted"
+                    vote.isEnabled = false
+                }
             }
             vote.setOnClickListener {
                 textViewPoleName.text = currPlace.foodPlace!!.name

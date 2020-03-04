@@ -53,14 +53,13 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.example.googleeatkot.MainActivity"/>
         </activity>
-        GroupPolesActivity
         <activity
                 android:name=".GroupPolesActivity"
                 android:label="Group Poles"
                 android:parentActivityName=".MyGroups">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.example.googleeatkot.MainActivity"/>
+                    android:value="com.example.googleeatkot.MyGroups"/>
         </activity>
         <activity
                 android:name=".MyGroups"

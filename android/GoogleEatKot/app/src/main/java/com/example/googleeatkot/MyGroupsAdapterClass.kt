@@ -1,6 +1,7 @@
 package com.example.googleeatkot
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,6 +11,7 @@ import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -208,13 +210,30 @@ class MyGroupsAdapterClass (val mCtx : Context, val LayoutResId : Int, val MyGro
                 val currentBundle = UBundle
                 currentBundle.putString("GroupKey",currGroup.key)
                 poleIntent.putExtras(currentBundle)
-                mCtx.startActivity(poleIntent)
+//                mCtx.startActivity(poleIntent)
+                val a= mCtx as MyGroups
+                a.startActivity(poleIntent)
+                a.finish()
+
             }
             Toast.makeText(mCtx, "you clicked on: " + textViewGroupName.text, Toast.LENGTH_LONG).show()
 //            add_member.visibility = Button.INVISIBLE
 //            show_members.visibility = View.INVISIBLE
 //            poles.visibility = View.INVISIBLE
         }
+
         return MyGroupView
     }
+
+
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == AppCompatActivity.RESULT_OK) {
+//            if (data != null) {
+//                UBundle = data.extras!!
+//            }
+//        }
+        print("hi")
+    }
 }
+

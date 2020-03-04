@@ -1,6 +1,7 @@
 package com.example.googleeatkot
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextMenu
@@ -24,6 +25,7 @@ class MyGroups : AppCompatActivity()  {
     lateinit var newGroupButton : Button
     lateinit var enteredNewGroupButton : Button
     lateinit var groupNameText : TextView
+    lateinit var UBundle: Bundle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +114,7 @@ class MyGroups : AppCompatActivity()  {
                     show_members.visibility = View.INVISIBLE
                     val poles = findViewById<Button>(R.id.group_poles)
                     poles.visibility = View.INVISIBLE
-                    val UBundle = intent.extras
+                    UBundle = intent.extras
                     val adapter = MyGroupsAdapterClass(this@MyGroups,R.layout.my_groups_1group, MyGroupsList, addMember, show_members, poles, UBundle)
                     GroupsListView.adapter = adapter
                 }
@@ -125,9 +127,23 @@ class MyGroups : AppCompatActivity()  {
         })
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (data != null) {
+                UBundle = data.extras!!
+            }
+        }
+    }
+
     override fun finish() {
         if(OurResult== 0) setResult(Activity.RESULT_OK)
         else setResult(Activity.RESULT_CANCELED)
         super.finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        print("hi")
     }
 }

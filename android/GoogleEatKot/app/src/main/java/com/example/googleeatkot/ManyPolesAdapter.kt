@@ -14,7 +14,7 @@ class ManyPolesAdapter (val mCtx : Context, val LayoutResId : Int, val MyPolesLi
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val layoutInflater: LayoutInflater = LayoutInflater.from(this.mCtx)
         val PoleView : View = layoutInflater.inflate(LayoutResId,null)
-        val adapter = PolePlacesAdapter(mCtx,R.id.one_place_of_pole,MyPolesList[position].placesList,currAppUser,MyPolesList[position].poleData!!.active )
+        val adapter = PolePlacesAdapter(mCtx,R.layout.poles_1pole_1place,MyPolesList[position].placesList,currAppUser,MyPolesList[position].poleData!!.active )
         PoleView.findViewById<ListView>(R.id.places_of_pole).adapter = adapter
         val currPole = MyPolesList[position]
     return PoleView

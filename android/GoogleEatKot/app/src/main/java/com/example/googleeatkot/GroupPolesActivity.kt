@@ -1,5 +1,7 @@
 package com.example.googleeatkot
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -147,38 +149,38 @@ class GroupPolesActivity : AppCompatActivity() {
                             for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
                                 val foodPlace4pole = place.getValue(FoodPlace::class.java)
-                                placePoleVoters.clear()
+//                                placePoleVoters.clear()
+                                val newPlace = PolePlace(
+                                    foodPlace4pole,
+                                    mutableListOf(),
+                                    MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!).child("PolePlaces").child(foodPlace4pole!!.key!!)
+                                )
                                 for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
-                                    placePoleVoters.add(voter!!)
+                                    newPlace.votersList.add(voter!!)
                                 }
-                                groupPolesList.last().placesList.add(
-                                    PolePlace(
-                                        foodPlace4pole,
-                                        placePoleVoters,
-                                        MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!)
-                                    )
-                                )
+                                groupPolesList.last().placesList.add(newPlace)
                             }
                         }
                         else{
+                            endPoleButton.visibility = View.VISIBLE
+                            addPlaces2Pole.visibility = View.VISIBLE
                             //activePole - only one can be active
                             activePole = GroupPole(currentPole!!, mutableListOf())
                             for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
                                 val foodPlace4pole = place.getValue(FoodPlace::class.java)
-                                placePoleVoters.clear()
+//                                placePoleVoters.clear()
+                                var newPolePlace = PolePlace(
+                                    foodPlace4pole,
+                                    mutableListOf(),
+                                    MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!).child("PolePlaces").child(foodPlace4pole!!.key!!)
+                                )
                                 for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
-                                    placePoleVoters.add(voter!!)
+                                    newPolePlace.votersList.add(voter!!)
                                 }
-                                activePole.placesList.add(
-                                    PolePlace(
-                                        foodPlace4pole,
-                                        placePoleVoters,
-                                        MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!).child("PolePlaces").child(foodPlace4pole!!.key!!)
-                                    )
-                                )
+                                activePole.placesList.add(newPolePlace)
                             }
                         }
                     }
@@ -258,7 +260,7 @@ class GroupPolesActivity : AppCompatActivity() {
         builder.setTitle("End Current Pole")
         builder.setMessage("Are you sure you want to end the pole?")
         builder.setPositiveButton("Yes"){p0, p1 ->
-            val polesDBRefrence = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("Poles")
+            val polesDBRefrence = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("Poles").child("PolesList")
             val activeVel = polesDBRefrence.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -266,10 +268,16 @@ class GroupPolesActivity : AppCompatActivity() {
 
                 override fun onDataChange(polesList: DataSnapshot) {
                     for(pole in polesList.children){
-                        val currPole = pole.getValue(PoleData::class.java)!!
-                        if(currPole.active){
-                            val updatePole = PoleData(currPole.poleName,currPole.poleKey,false)
-                            polesDBRefrence.child(currPole.poleKey).setValue(updatePole)
+                        val currPoleData = pole.child("PoleData").getValue(PoleData::class.java)!!
+                        val currPolePlaces: MutableList<FoodPlace> = mutableListOf()
+
+                        if(currPoleData.active){
+                            val updatePole = PoleData(currPoleData.poleName,currPoleData.poleKey,false)
+                            polesDBRefrence.child(currPoleData.poleKey).child("PoleData").setValue(updatePole)
+//                            for (place in pole.child("PolePlaces").children) {
+//                                //currPolePlaces.add(place.getValue(FoodPlace::class.java)!!)
+//                                polesDBRefrence.child(currPoleData.poleKey).child("PolePlaces").child(place.key!!).setValue(place.getValue(FoodPlace::class.java)!!)
+//                            }
                             polesDBRefrence.parent!!.child("ActivePole").removeValue()
                             endPoleButton.visibility = View.INVISIBLE
                             addPlaces2Pole.visibility = View.INVISIBLE
@@ -353,5 +361,16 @@ class GroupPolesActivity : AppCompatActivity() {
                 alert.show()
             }
         })
+    }
+
+    override fun finish() {
+        val data = Intent()
+//        UBundle.putString("UserName",currUserData.UserName)
+//        UBundle.putString("UserEmail", currUserData.UserEmail)
+//        UBundle.putString("UserID", currUserData.UserID)
+        val UBundle = userDataBundle
+        data.putExtras(UBundle)
+        setResult(RESULT_OK, data)
+        super.finish()
     }
 }
