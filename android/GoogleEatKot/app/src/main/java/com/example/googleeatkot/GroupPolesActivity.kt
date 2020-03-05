@@ -143,6 +143,7 @@ class GroupPolesActivity : AppCompatActivity() {
                 }
                 else{
                     groupPolesList.clear()
+
                     for(pole in groupPoles.children){
                         var currentPole = pole.child("PoleData").getValue(PoleData::class.java)
                         if(!(currentPole!!.active)) {
@@ -185,6 +186,13 @@ class GroupPolesActivity : AppCompatActivity() {
                                 }
                                 activePole.placesList.add(newPolePlace)
                             }
+                            //val activePoleAdapter = PolePlacesAdapter(this@GroupPolesActivity,R.layout.poles_1pole_1place,activePole.placesList,currAppUser,true)
+                            activePoleView.findViewById<TextView>(R.id.textView_poleName).text = activePole.poleData!!.poleName
+                            //activePoleView.findViewById<ListView>(R.id.places_of_pole).adapter = activePoleAdapter
+                            activePoleView.findViewById<RecyclerView>(R.id.places_of_pole).apply {
+                                layoutManager = LinearLayoutManager(this@GroupPolesActivity)
+                                adapter = PolePlacesRecyclerAdapter(this@GroupPolesActivity,activePole.placesList,currAppUser,true)
+                            }
                         }
                     }
                     //val oldPolesAdapter = ManyPolesAdapter(this@GroupPolesActivity,R.layout.poles_1pole,groupPolesList,currAppUser)
@@ -192,13 +200,6 @@ class GroupPolesActivity : AppCompatActivity() {
                     oldPolesListView.apply {
                         layoutManager = LinearLayoutManager(this@GroupPolesActivity)
                         adapter = PastPolesRecyclerAdapter(this@GroupPolesActivity,groupPolesList,currAppUser)
-                    }
-                    //val activePoleAdapter = PolePlacesAdapter(this@GroupPolesActivity,R.layout.poles_1pole_1place,activePole.placesList,currAppUser,true)
-                    activePoleView.findViewById<TextView>(R.id.textView_poleName).text = activePole.poleData!!.poleName
-                    //activePoleView.findViewById<ListView>(R.id.places_of_pole).adapter = activePoleAdapter
-                    activePoleView.findViewById<RecyclerView>(R.id.places_of_pole).apply {
-                        layoutManager = LinearLayoutManager(this@GroupPolesActivity)
-                        adapter = PolePlacesRecyclerAdapter(this@GroupPolesActivity,activePole.placesList,currAppUser,true)
                     }
                 }
 

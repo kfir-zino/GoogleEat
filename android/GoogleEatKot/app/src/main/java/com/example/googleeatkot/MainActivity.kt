@@ -28,6 +28,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.*
 import com.google.firebase.database.*
 
@@ -59,13 +60,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
 
 
-        val acct: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.baseContext)!!
-        if (acct != null) {
-            var opt = acct.account!!
 
-
-
-        }
 
         // signOutButton.visibility = View.INVISIBLE
         // Obtain the FirebaseAnalytics instance.
@@ -280,9 +275,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         FirebaseAuth.getInstance().signOut()
         signInButton.visibility = View.VISIBLE
         signOutButton.visibility = View.INVISIBLE
-        GoogleSignIn.getClient(this, gso).signOut()
 //        GoogleSignIn.getSignedInAccountFromIntent(loginIntent).getResult()
 //        GoogleSignIn.getLastSignedInAccount(this)
+        val acct: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.baseContext)!!
+        if (acct != null && gso == null) {
+            var opt = acct.account!!
+//            Auth.GoogleSignInApi.signOut()
+        } else {
+            GoogleSignIn.getClient(this, gso).signOut()
+        }
 
 
     }
