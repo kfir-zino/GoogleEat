@@ -110,31 +110,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val acct = GoogleSignIn.getLastSignedInAccount(this.baseContext)
         when (item.itemId) {
             R.id.nav_places -> {
-                placesIntent = Intent(this, MyPlacesActivity::class.java)
-                placesIntent.putExtras(UBundle)
-                startActivityForResult(placesIntent, RC_SIGN_IN)
-                Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
+                if (acct != null) {
+                    placesIntent = Intent(this, MyPlacesActivity::class.java)
+                    placesIntent.putExtras(UBundle)
+                    startActivityForResult(placesIntent, RC_SIGN_IN)
+                } else {
+                    Toast.makeText(this, "Please connect to user first :)", Toast.LENGTH_SHORT).show()
+                }
             }
             R.id.nav_groups -> {
-                groupsIntent = Intent(this, MyGroups::class.java)
-                groupsIntent.putExtras(UBundle)
-                startActivityForResult(groupsIntent, RC_SIGN_IN)
-                Toast.makeText(this, "Groups clicked", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_friends -> {
-                Toast.makeText(this, "Friends clicked", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_update -> {
-                Toast.makeText(this, "Update clicked", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_logout -> {
-                if (currentUser == null){
-                    Toast.makeText(this, "You are not signed in.", Toast.LENGTH_SHORT).show()
+                if (acct != null) {
+
+                    groupsIntent = Intent(this, MyGroups::class.java)
+                    groupsIntent.putExtras(UBundle)
+                    startActivityForResult(groupsIntent, RC_SIGN_IN)
                 } else {
-//                    this.signIn()
-                    this.signOut()
+                    Toast.makeText(this, "Please connect to user first :)", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -273,20 +267,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun signOut() {
-        val acct: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.baseContext)!!
+        val acct = GoogleSignIn.getLastSignedInAccount(this.baseContext)
         if (acct != null) {
-
             FirebaseAuth.getInstance().signOut()
             signInButton.visibility = View.VISIBLE
             signOutButton.visibility = View.INVISIBLE
-            if (gso == null) {
-                var opt = acct.account!!
-            } else {
-                GoogleSignIn.getClient(this, gso!!).signOut()
+            GoogleSignIn.getClient(this, gso).signOut()
             }
         }
 
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

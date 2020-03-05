@@ -10,10 +10,6 @@
                 android:id="@+id/nav_groups"
                 android:icon="@drawable/ic_message_black_24dp"
                 android:title="@string/my_groups"/>
-        <item
-                android:id="@+id/nav_friends"
-                android:icon="@drawable/ic_tag_faces_black_24dp"
-                android:title="@string/my_friends"/>
     </group>
 
 
@@ -23,10 +19,6 @@
                     android:id="@+id/nav_update"
                     android:icon="@drawable/ic_update_black"
                     android:title="@string/update_profile"/>
-            <item
-                    android:id="@+id/nav_logout"
-                    android:icon="@drawable/ic_restaurant_png"
-                    android:title="@string/sign_out"/>
         </menu>
     </item>
 </menu>

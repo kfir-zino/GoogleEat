@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import com.example.googleeatkot.Common.Common
 import com.example.googleeatkot.Model.myPlaces
 import com.example.googleeatkot.remote.IGoogleAPIservice
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -141,7 +142,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     }
 //                    Common.placesResults = currentPlaces!!.results!!
                     mMap!!.setInfoWindowAdapter(ViewPlace(this@MapFragment.requireContext()))
-                    addToMyPlaces!!.visibility = View.VISIBLE
+                    val acct = GoogleSignIn.getLastSignedInAccount(this@MapFragment.requireContext())
+                    if (acct != null) {
+                        addToMyPlaces!!.visibility = View.VISIBLE
+                    }
                     marker.showInfoWindow()
                     true
                 }
@@ -163,8 +167,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                         override fun onDataChange(userPlaces: DataSnapshot) {
                             for (place in userPlaces.children) {
-                                if (place.getValue(FoodPlace::class.java)!!.name == Common.currentResult!!.name!!)
+                                if (place.getValue(FoodPlace::class.java)!!.name == Common.currentResult!!.name!!) {
                                     inPlaces = true
+                                    Toast.makeText(this@MapFragment.requireContext(),"Place already in My Places", Toast.LENGTH_SHORT).show()
+                                }
                             }
                             if (!inPlaces) {
                                 val placeId = Common.currentResult!!.place_id
@@ -306,11 +312,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (mMap != null) {
             mMap!!.setOnMarkerClickListener { marker ->
                 addToMyPlaces = rootView!!.findViewById(R.id.addPlace)
+                val acct = GoogleSignIn.getLastSignedInAccount(this@MapFragment.requireContext())
+                if (acct != null) {
+                    addToMyPlaces!!.visibility = View.VISIBLE
+                }
                 if (Common.placesResults != null && Common.placesResults!!.isNotEmpty()) {
                     Common.currentResult = Common.placesResults!![marker.snippet]
                 }
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
-                addToMyPlaces!!.visibility = View.VISIBLE
                 marker.showInfoWindow()
                 true
             }
@@ -447,7 +456,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
 //                Common.placesResults = currentPlaces!!.results!!
                 mMap!!.setInfoWindowAdapter(ViewPlace(this.requireContext()))
-                addToMyPlaces!!.visibility = View.VISIBLE
+                val acct = GoogleSignIn.getLastSignedInAccount(this@MapFragment.requireContext())
+                if (acct != null) {
+                    addToMyPlaces!!.visibility = View.VISIBLE
+                }
                 marker.showInfoWindow()
                 true
             }
