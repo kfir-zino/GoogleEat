@@ -63,13 +63,13 @@ class PolePlaceViewHolder(inflater: LayoutInflater, parent: ViewGroup, val currA
         }
         else {
             vote?.isEnabled = false
-            if (currAppUser in polePlace.votersList){
-                vote?.text = "Yes"
-                vote?.setBackgroundColor(Color.GREEN)
-            }
-            else{
-                vote?.text = "No"
-                vote?.setBackgroundColor(Color.RED)
+            vote?.text = "No"
+            vote?.setBackgroundColor(Color.RED)
+            for (voter in polePlace.votersList) {
+                if (currAppUser.UserID == voter.UserID) {
+                    vote?.text = "Yes"
+                    vote?.setBackgroundColor(Color.GREEN)
+                }
             }
         }
     }

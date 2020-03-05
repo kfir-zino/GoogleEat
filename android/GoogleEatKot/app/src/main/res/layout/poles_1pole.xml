@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintHeight_max="350dp">
+    app:layout_constraintHeight_max="150dp"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/textView_poleName"

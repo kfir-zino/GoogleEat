@@ -57,85 +57,18 @@ class GroupPolesActivity : AppCompatActivity() {
         currGroupKey = intent.getStringExtra("GroupKey") //retreiving the group from father activity
         MyGroupPolesDBRef = FirebaseDatabase.getInstance()!!.getReference("Groups").child(currGroupKey).child("Poles")
         myPlacesDBRef = FirebaseDatabase.getInstance()!!.getReference("Users").child(currAppUser.UserID).child("MyPlaces")
-//        MyGroupPolesDBRef.addValueEventListener(object : ValueEventListener{
-//            override fun onCancelled(p0: DatabaseError) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//
-//            override fun onDataChange(groupPoles: DataSnapshot) {
-//                //check if there is an active pole (or any poles at all)
-//                if(!(groupPoles.exists()))//no poles to show
-//                {
-//                    //TODO - inflate layout of adding new pole
-//                    Toast.makeText(this@GroupPolesActivity, "No Poles Made for This Group", Toast.LENGTH_LONG).show()
-//                }
-//                else{
-//                    groupPolesList.clear()
-//                    for(pole in groupPoles.children){
-//                        var currentPole = pole.getValue(PoleData::class.java)
-//                        if(!(currentPole!!.active)) {
-//                            groupPolesList.add(GroupPole(currentPole!!, mutableListOf()))
-//                            for (place in groupPoles.child(currentPole!!.poleKey).children) {
-//                                //initialization of every poleplace (listing the voters, and adding to the list
-//                                val foodPlace4pole = place.getValue(FoodPlace::class.java)
-//                                placePoleVoters.clear()
-//                                for (member in groupPoles.child(currentPole!!.poleKey).child("Voters").children) {
-//                                    val voter = member.getValue(UserData::class.java)
-//                                    placePoleVoters.add(voter!!)
-//                                }
-//                                groupPolesList.last().placesList.add(
-//                                    PolePlace(
-//                                        foodPlace4pole,
-//                                        placePoleVoters,
-//                                        MyGroupPolesDBRef.child(currentPole.poleKey!!)
-//                                    )
-//                                )
-//                            }
-//                        }
-//                        else{
-//                            //activePole - only one can be active
-//                            activePole = GroupPole(currentPole!!, mutableListOf())
-//                            for (place in groupPoles.child(currentPole!!.poleKey).children) {
-//                                //initialization of every poleplace (listing the voters, and adding to the list
-//                                val foodPlace4pole = place.getValue(FoodPlace::class.java)
-//                                placePoleVoters.clear()
-//                                for (member in groupPoles.child(currentPole!!.poleKey).child("Voters").children) {
-//                                    val voter = member.getValue(UserData::class.java)
-//                                    placePoleVoters.add(voter!!)
-//                                }
-//                                activePole.placesList.add(
-//                                    PolePlace(
-//                                        foodPlace4pole,
-//                                        placePoleVoters,
-//                                        MyGroupPolesDBRef.child(currentPole.poleKey!!)
-//                                    )
-//                                )
-//                            }
-//                        }
-//                    }
-//                    val oldPolesAdapter = ManyPolesAdapter(this@GroupPolesActivity,R.layout.poles_1pole,groupPolesList,currAppUser)
-//                    oldPolesListView.adapter = oldPolesAdapter
-//                    val activePoleAdapter = PolePlacesAdapter(this@GroupPolesActivity,R.id.one_place_of_pole,activePole.placesList,currAppUser,true)
-//                    activePoleView.findViewById<ListView>(R.id.places_of_pole).adapter = activePoleAdapter
-//                }
-//
-//            }
-//
-//        })
-
-
     }
 
     override fun onResume() {
         super.onResume()
-        vel = MyGroupPolesDBRef.child("PolesList").addValueEventListener(object : ValueEventListener{
+        vel = MyGroupPolesDBRef.addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onDataChange(groupPoles: DataSnapshot) {
                 //check if there is an active pole (or any poles at all)
-                if(!(groupPoles.exists()))//no poles to show
+                if(!(groupPoles.child("PolesList").exists()))//no poles to show
                 {
                     endPoleButton.visibility = View.INVISIBLE
                     addPlaces2Pole.visibility = View.INVISIBLE
@@ -144,13 +77,13 @@ class GroupPolesActivity : AppCompatActivity() {
                 else{
                     groupPolesList.clear()
 
-                    for(pole in groupPoles.children){
+                    for(pole in groupPoles.child("PolesList").children){
                         var currentPole = pole.child("PoleData").getValue(PoleData::class.java)
                         if(!(currentPole!!.active)) {
                             endPoleButton.visibility = View.INVISIBLE
                             addPlaces2Pole.visibility = View.INVISIBLE
                             groupPolesList.add(GroupPole(currentPole!!, mutableListOf()))
-                            for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
+                            for (place in groupPoles.child("PolesList").child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
                                 val foodPlace4pole = place.getValue(FoodPlace::class.java)
 //                                placePoleVoters.clear()
@@ -159,7 +92,7 @@ class GroupPolesActivity : AppCompatActivity() {
                                     mutableListOf(),
                                     MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!).child("PolePlaces").child(foodPlace4pole!!.key!!)
                                 )
-                                for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
+                                for (member in groupPoles.child("PolesList").child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
                                     newPlace.votersList.add(voter!!)
                                 }
@@ -171,7 +104,7 @@ class GroupPolesActivity : AppCompatActivity() {
                             addPlaces2Pole.visibility = View.VISIBLE
                             //activePole - only one can be active
                             activePole = GroupPole(currentPole!!, mutableListOf())
-                            for (place in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").children) {
+                            for (place in groupPoles.child("PolesList").child(currentPole!!.poleKey).child("PolePlaces").children) {
                                 //initialization of every poleplace (listing the voters, and adding to the list
                                 val foodPlace4pole = place.getValue(FoodPlace::class.java)
 //                                placePoleVoters.clear()
@@ -180,7 +113,7 @@ class GroupPolesActivity : AppCompatActivity() {
                                     mutableListOf(),
                                     MyGroupPolesDBRef.child("PolesList").child(currentPole.poleKey!!).child("PolePlaces").child(foodPlace4pole!!.key!!)
                                 )
-                                for (member in groupPoles.child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
+                                for (member in groupPoles.child("PolesList").child(currentPole!!.poleKey).child("PolePlaces").child(place.key!!).child("Voters").children) {
                                     val voter = member.getValue(UserData::class.java)
                                     newPolePlace.votersList.add(voter!!)
                                 }
@@ -199,7 +132,7 @@ class GroupPolesActivity : AppCompatActivity() {
                     //oldPolesListView.adapter = oldPolesAdapter
                     oldPolesListView.apply {
                         layoutManager = LinearLayoutManager(this@GroupPolesActivity)
-                        adapter = PastPolesRecyclerAdapter(this@GroupPolesActivity,groupPolesList,currAppUser)
+                        adapter = PastPolesRecyclerAdapter(this@GroupPolesActivity,groupPolesList.asReversed(),currAppUser)
                     }
                 }
 
