@@ -30,6 +30,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.database.*
 
 
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var signOutButton: Button
     lateinit var imagesCheckBox: CheckBox
     var currentUser: FirebaseUser? = null
-    lateinit var gso: GoogleSignInOptions
+    var gso: GoogleSignInOptions = GoogleSignInOptions.DEFAULT_SIGN_IN
     lateinit var loginIntent: Intent
     lateinit var miniMap: MapView
     val RC_SIGN_IN: Int = 1
@@ -132,7 +133,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (currentUser == null){
                     Toast.makeText(this, "You are not signed in.", Toast.LENGTH_SHORT).show()
                 } else {
-                    this.signIn()
+//                    this.signIn()
                     this.signOut()
                 }
             }
@@ -236,7 +237,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this.signIn()
         }
         signOutButton.setOnClickListener{
-            this.signIn()
+//            this.signIn()
             this.signOut()
         }
         imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox
@@ -252,7 +253,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this.signIn()
         }
         signOutButton.setOnClickListener{
-            this.signIn()
+//            this.signIn()
             this.signOut()
         }
         imagesCheckBox = findViewById<CheckBox>(R.id.show_image_box) as CheckBox
@@ -272,19 +273,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun signOut() {
-        FirebaseAuth.getInstance().signOut()
-        signInButton.visibility = View.VISIBLE
-        signOutButton.visibility = View.INVISIBLE
-//        GoogleSignIn.getSignedInAccountFromIntent(loginIntent).getResult()
-//        GoogleSignIn.getLastSignedInAccount(this)
         val acct: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.baseContext)!!
-        if (acct != null && gso == null) {
-            var opt = acct.account!!
-//            Auth.GoogleSignInApi.signOut()
-        } else {
-            GoogleSignIn.getClient(this, gso).signOut()
-        }
+        if (acct != null) {
 
+            FirebaseAuth.getInstance().signOut()
+            signInButton.visibility = View.VISIBLE
+            signOutButton.visibility = View.INVISIBLE
+            if (gso == null) {
+                var opt = acct.account!!
+            } else {
+                GoogleSignIn.getClient(this, gso!!).signOut()
+            }
+        }
 
     }
 
