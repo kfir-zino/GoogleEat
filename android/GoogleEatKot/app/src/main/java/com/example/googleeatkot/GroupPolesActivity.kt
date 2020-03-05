@@ -132,7 +132,7 @@ class GroupPolesActivity : AppCompatActivity() {
                     //oldPolesListView.adapter = oldPolesAdapter
                     oldPolesListView.apply {
                         layoutManager = LinearLayoutManager(this@GroupPolesActivity)
-                        adapter = PastPolesRecyclerAdapter(this@GroupPolesActivity,groupPolesList,currAppUser)
+                        adapter = PastPolesRecyclerAdapter(this@GroupPolesActivity,groupPolesList.asReversed(),currAppUser)
                     }
                 }
 
