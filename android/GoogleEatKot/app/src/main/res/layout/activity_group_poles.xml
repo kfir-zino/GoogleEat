@@ -19,7 +19,7 @@
         <include
                 android:id="@+id/pole1_ActivePole"
                 layout="@layout/poles_1pole"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                  />
@@ -60,10 +60,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <ListView
-                    android:id="@+id/ListView_PastPoles"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+<!--            <ListView-->
+<!--                    android:id="@+id/ListView_PastPoles"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent" />-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ListView_PastPoles"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
     </LinearLayout>
