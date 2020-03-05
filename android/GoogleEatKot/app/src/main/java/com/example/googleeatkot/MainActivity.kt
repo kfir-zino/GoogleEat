@@ -13,8 +13,6 @@ import com.example.googleeatkot.ui.login.LoginActivity
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.MapView
 import android.graphics.BitmapFactory
 import java.net.URL
@@ -30,6 +28,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import com.google.android.gms.auth.api.signin.*
 import com.google.firebase.database.*
 
 
@@ -59,6 +58,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        val acct: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.baseContext)!!
+        if (acct != null) {
+            var opt = acct.account!!
+
+
+
+        }
 
         // signOutButton.visibility = View.INVISIBLE
         // Obtain the FirebaseAnalytics instance.
